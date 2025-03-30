@@ -213,6 +213,7 @@ Updates a row by its ID using an object.
 Deletes a row by ID.
 
 ### db.selectWhere(table, conditions)
+
 Builds a `WHERE` clause from a JS object and runs the `SELECT`.
 
 ---

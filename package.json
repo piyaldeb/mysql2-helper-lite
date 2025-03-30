@@ -3,11 +3,18 @@
     "version": "1.0.0",
     "description": "A lightweight MySQL2 helper for cleaner, simpler queries in Node.js.",
     "main": "index.js",
-    "keywords": ["mysql2", "helper", "nodejs", "sql", "db", "promise"],
+    "keywords": [
+        "mysql2",
+        "helper",
+        "nodejs",
+        "sql",
+        "db",
+        "promise"
+    ],
     "author": "Your Name",
     "license": "MIT",
     "dependencies": {
-      "mysql2": "^3.0.0"
+        "mysql2": "^3.0.0",
+        "mysql2-helper-lite": "file:"
     }
-  }
-  
+}
