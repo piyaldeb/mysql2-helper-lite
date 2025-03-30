@@ -1,14 +1,4 @@
-Absolutely — here’s your **final polished and production-ready `README.md`** for your `mysql2-helper-lite` package, with everything included:
 
-✅ Clear intro  
-✅ Features list  
-✅ Install instructions  
-✅ Full usage examples  
-✅ Method reference  
-✅ Author + License  
-✅ Contribution section  
-
----
 
 ```markdown
 # 🚀 mysql2-helper-lite
