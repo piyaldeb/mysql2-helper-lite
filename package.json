@@ -1,20 +1,28 @@
 {
     "name": "mysql2-helper-lite",
-    "version": "1.0.1",
-    "description": "A lightweight MySQL2 helper for cleaner, simpler queries in Node.js.",
+    "version": "2.0.0",
+    "description": "A lightweight helper for mysql2/promise to simplify common database operations.",
     "main": "index.js",
     "keywords": [
         "mysql2",
+        "mysql",
         "helper",
-        "nodejs",
-        "sql",
-        "db",
-        "promise"
+        "database",
+        "promise",
+        "lightweight"
     ],
-    "author": "Your Name",
+    "author": "Ranak Debnath <piyaldeb87@gmail.com>",
     "license": "MIT",
     "dependencies": {
         "mysql2": "^3.0.0",
         "mysql2-helper-lite": "file:"
-    }
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/piyaldeb/mysql2-helper-lite"
+    },
+    "bugs": {
+        "url": "https://github.com/piyaldeb/mysql2-helper-lite/issues"
+    },
+    "homepage": "https://github.com/piyaldeb/mysql2-helper-lite#readme"
 }
