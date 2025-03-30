@@ -32,6 +32,11 @@ module.exports = function(pool) {
       await pool.execute(sql, [id]);
     },
 
+    forceDeleteById: async (table, id, idField = 'id') => {
+      const sql = `DELETE FROM ${table} WHERE ${idField} = ?`;
+      await pool.execute(sql, [id]);
+    },
+
     selectWhere: async (table, conditions = {}) => {
       const keys = Object.keys(conditions);
       const values = Object.values(conditions);
@@ -39,6 +44,37 @@ module.exports = function(pool) {
       const whereClause = keys.map(k => `${k} = ?`).join(' AND ');
       const sql = `SELECT * FROM ${table} WHERE ${whereClause}`;
       return await db.query(sql, values);
+    },
+
+    findOne: async (table, conditions = {}) => {
+      const keys = Object.keys(conditions);
+      const values = Object.values(conditions);
+      if (keys.length === 0) return null;
+      const whereClause = keys.map(k => `${k} = ?`).join(' AND ');
+      const sql = `SELECT * FROM ${table} WHERE ${whereClause} LIMIT 1`;
+      return await db.getOne(sql, values);
+    },
+
+    count: async (table, conditions = {}) => {
+      const keys = Object.keys(conditions);
+      const values = Object.values(conditions);
+      let sql = `SELECT COUNT(*) as count FROM ${table}`;
+      if (keys.length > 0) {
+        const whereClause = keys.map(k => `${k} = ?`).join(' AND ');
+        sql += ` WHERE ${whereClause}`;
+      }
+      const result = await db.getOne(sql, values);
+      return result ? result.count : 0;
+    },
+
+    exists: async (table, conditions = {}) => {
+      const keys = Object.keys(conditions);
+      const values = Object.values(conditions);
+      if (keys.length === 0) return false;
+      const whereClause = keys.map(k => `${k} = ?`).join(' AND ');
+      const sql = `SELECT EXISTS(SELECT 1 FROM ${table} WHERE ${whereClause}) AS exist`;
+      const result = await db.getOne(sql, values);
+      return !!result?.exist;
     }
   };
 
