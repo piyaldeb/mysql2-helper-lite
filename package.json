@@ -1,6 +1,6 @@
 {
     "name": "mysql2-helper-lite",
-    "version": "2.0.1",
+    "version": "2.1.1",
     "description": "A lightweight helper for mysql2/promise to simplify common database operations.",
     "main": "index.js",
     "keywords": [
