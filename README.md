@@ -1,529 +1,231 @@
+# MySQL DB Wrapper Pro
 
-
-```markdown
-# 🚀 mysql2-helper-lite
-
-> A lightweight, developer-friendly helper for working with `mysql2/promise` in Node.js. This package simplifies your SQL queries, eliminates boilerplate, and gives you full control of raw SQL + structured helpers.
-
----
-
-## 📦 What is this?
-
-Working with `mysql2/promise` is powerful — but repetitive.
-
-Instead of doing this:
-
-```js
-const [rows] = await pool.execute('SELECT * FROM users WHERE email = ?', ['john@example.com']);
-const user = rows[0];
-```
-
-You can just:
-
-```js
-const user = await db.getOne('SELECT * FROM users WHERE email = ?', ['john@example.com']);
-```
-
-✅ Less boilerplate  
-✅ Cleaner syntax  
-✅ Object-based inserts/updates  
-✅ Built-in joins, timestamps, soft deletes, audit logging  
-✅ Plug-and-play Express route generator
-
----
+A powerful MySQL database wrapper with advanced querying, caching, pagination, hooks, and 30+ utility methods.
 
 ## 🚀 Features
 
-- 🔹 `query()` – Run raw SQL
-- 🔹 `getOne()` – Get first row or `null`
-- 🔹 `insert()` / `bulkInsert()` – Insert from object(s)
-- 🔹 `updateById()` – Update row by ID
-- 🔹 `deleteById()` – Soft/hard delete
-- 🔹 `selectWhere()` – Object-based filtering
-- 🔹 `getByIds()` – Get rows by ID list
-- 🔹 `count()` / `exists()` – Check row count or presence
-- 🔹 `increment()` / `decrement()` – Modify numeric fields
-- 🔹 `distinctValues()` – Get unique column values
-- 🔹 `search()` – Fuzzy search across fields
-- 🔹 `join()` / `multiJoin()` – JOINs, including FULL OUTER
-- 🔹 `transaction()` – Wrap logic in SQL transaction
-- 🔹 `logAudit()` – Write to audit logs
-- 🔹 `generateCrudRoutes()` – Auto REST routes with Express
+- ✅ Query caching with auto-invalidation
+- ✅ Advanced search with multiple operators
+- ✅ Pagination with metadata
+- ✅ Aggregate functions (min, max, avg, sum)
+- ✅ Full-text search
+- ✅ Upsert & batch operations
+- ✅ Lifecycle hooks (before/after)
+- ✅ Transaction support
+- ✅ Soft deletes
+- ✅ Multi-table joins
+- ✅ Audit logging
+- ✅ 30+ utility methods
 
----
+## 📦 Installation
 
-## 🧰 Installation
+\`\`\`bash
+npm install mysql-db-wrapper-pro mysql2
+\`\`\`
 
-Make sure you have `mysql2` installed:
+## 🔧 Quick Start
 
-```bash
-npm install mysql2
-```
-
-Then install this package:
-
-```bash
-npm install mysql2-helper-lite
-```
-
----
-
-## ⚙️ Setup
-
-```js
+\`\`\`javascript
 const mysql = require('mysql2/promise');
-const { createDb, generateCrudRoutes } = require('mysql2-helper-lite');
+const { createDb } = require('mysql-db-wrapper-pro');
 
+// Create connection pool
 const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
-  password: '',
-  database: 'your_database'
+  password: 'password',
+  database: 'mydb',
+  waitForConnections: true,
+  connectionLimit: 10
 });
 
-const db = createDb(pool, ['users', 'audit_logs'], { useTimestamps: true });
-```
-
----
-
-## 💡 Usage Examples
-
-### 🔹 Insert a record
-
-```js
-const userId = await db.insert('users', {
-  name: 'Ranak',
-  email: 'ranak@example.com'
+// Initialize DB wrapper
+const db = createDb(pool, ['users', 'posts', 'comments'], {
+  useTimestamps: true,
+  enableQueryCache: true,
+  cacheExpiry: 60000 // 1 minute
 });
-```
 
-### 🔹 Get one record
-
-```js
-const user = await db.getOne('SELECT * FROM users WHERE id = ?', [userId]);
-```
-
-### 🔹 Update by ID
-
-```js
-await db.updateById('users', userId, { name: 'Ranak Updated' });
-```
-
-### 🔹 Delete (soft or hard)
-
-```js
-await db.deleteById('users', userId);         // Soft delete
-await db.deleteById('users', userId, false);  // Hard delete
-```
-
-### 🔹 Select with dynamic WHERE
-
-```js
-const admins = await db.selectWhere('users', {
-  role: 'admin',
-  status: 'active'
-});
-```
-
-### 🔹 Auto REST API (Express)
-
-```js
-generateCrudRoutes(app, 'users', db);
-```
-
----
-
-## 🔄 Traditional vs Helper Comparison
-
-| Operation         | Traditional MySQL2                   | With mysql2-helper-lite     |
-|-------------------|---------------------------------------|-----------------------------|
-| Insert            | Write full INSERT + bindings          | `db.insert('users', data)` |
-| Get One           | `rows[0]` manually                    | `db.getOne(...)`            |
-| Update            | Build SET and WHERE manually          | `db.updateById(...)`        |
-| Delete            | Write DELETE manually                 | `db.deleteById(...)`        |
-| Select Where      | Build WHERE string + bindings         | `db.selectWhere(...)`       |
-
----
-
-## 🧪 Full Example
-
-```js
-const mysql = require('mysql2/promise');
-const { createDb, generateCrudRoutes } = require('mysql2-helper-lite'); // adjust path if testing locally
-
-(async () => {
-  const pool = await mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: '', // your password
-    database: 'test_db',
-    waitForConnections: true,
-    connectionLimit: 10
-  });
-
-  const db = createDb(pool, ['users', 'audit_logs'], { useTimestamps: true });
-
-  console.log('\n🚀 Starting DB Helper Tests...\n');
-
-  // Cleanup
-  await db.truncate('users');
-  console.log('✅ Truncated users');
-
+// Start using!
+async function example() {
   // Insert
   const userId = await db.insert('users', {
-    name: 'Alice',
-    email: 'alice@example.com',
-    age: 25
+    name: 'John Doe',
+    email: 'john@example.com'
   });
-  console.log('✅ Inserted user:', userId);
 
-  // Bulk insert
-  await db.bulkInsert('users', [
-    { name: 'Bob', email: 'bob@example.com', age: 30 },
-    { name: 'Charlie', email: 'charlie@example.com', age: 22 }
-  ]);
-  console.log('✅ Bulk inserted users');
-
-  // Select where
-  const users = await db.selectWhere('users', { age: 30 });
-  console.log('✅ Users age 30:', users);
-
-  // Find one
-  const found = await db.findOne('users', { name: 'Alice' });
-  console.log('✅ Found Alice:', found);
-
-  // Exists
-  const exists = await db.exists('users', { email: 'bob@example.com' });
-  console.log('✅ Bob exists?', exists);
-
-  // Get by IDs
-  const list = await db.getByIds('users', [userId]);
-  console.log('✅ Get by IDs:', list);
-
-  // Count
-  const count = await db.count('users');
-  console.log('✅ Count users:', count);
-
-  // Update by ID
-  await db.updateById('users', userId, { age: 26 });
-  const updated = await db.findOne('users', { id: userId });
-  console.log('✅ Updated user age:', updated.age);
-
-  // Increment / Decrement
-  await db.increment('users', userId, 'age');
-  await db.decrement('users', userId, 'age', 2);
-  const changedAge = await db.findOne('users', { id: userId });
-  console.log('✅ Final age (after +/-):', changedAge.age);
-
-  // Distinct
-  const distinctAges = await db.distinctValues('users', 'age');
-  console.log('✅ Distinct ages:', distinctAges.map(d => d.age));
-
-  // Search
-  const searchResults = await db.search('users', ['name', 'email'], 'bob');
-  console.log('✅ Search for "bob":', searchResults);
-
-  // Soft delete
-  await db.deleteById('users', userId, true);
-  const softDeleted = await db.findOne('users', { id: userId });
-  console.log('✅ Soft deleted user:', softDeleted);
-
-  // Hard delete
-  await db.deleteById('users', userId, false);
-  const hardDeleted = await db.findOne('users', { id: userId });
-  console.log('✅ Hard deleted user (should be null):', hardDeleted);
-
-  // Join
-  const joined = await db.join({
-    baseTable: 'users',
-    joinTable: 'audit_logs',
-    baseKey: 'id',
-    joinKey: 'user_id',
-    columns: ['users.name', 'audit_logs.action'],
-    joinType: 'LEFT',
-    conditions: {}
+  // Paginate
+  const result = await db.paginate('users', {
+    page: 1,
+    perPage: 20,
+    where: { status: 'active' },
+    orderBy: [{ column: 'created_at', direction: 'DESC' }]
   });
-  console.log('✅ Joined users + audit_logs:', joined);
 
-  // Transaction
-  try {
-    await db.transaction(async (conn) => {
-      await conn.query(`INSERT INTO users (name, email, age, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())`, ['TX', 'tx@example.com', 33]);
-      throw new Error('Rollback test');
-    });
-  } catch (e) {
-    console.log('✅ Transaction rolled back correctly');
-  }
+  // Advanced search
+  const users = await db.advancedSearch('users', {
+    age: { operator: '>', value: 18 },
+    email: { operator: 'LIKE', value: 'gmail.com' }
+  });
 
-  // Audit log
-  await db.logAudit('test', 'users', { userId: 123 }, 99);
-  const logs = await db.selectWhere('audit_logs');
-  console.log('✅ Audit logs:', logs);
+  // Aggregates
+  const totalPosts = await db.count('posts', { status: 'published' });
+  const avgViews = await db.avg('posts', 'views');
+}
+\`\`\`
 
-  console.log('\n✅ All tests completed successfully!\n');
+## 📚 Documentation
 
-  await pool.end();
-})();
+### Core Methods
 
-```
+#### Insert
+\`\`\`javascript
+await db.insert('users', { name: 'John', email: 'john@example.com' });
+await db.insertAndReturn('users', { name: 'Jane' }); // Returns full record
+await db.upsert('users', { id: 1, name: 'Updated' }); // Insert or update
+await db.bulkInsert('users', [{ name: 'A' }, { name: 'B' }]);
+\`\`\`
 
----
+#### Update
+\`\`\`javascript
+await db.updateById('users', 1, { name: 'New Name' });
+await db.updateWhere('users', { status: 'pending' }, { status: 'active' });
+await db.increment('users', 1, 'login_count');
+\`\`\`
 
-## 📘 Full API Reference
+#### Delete
+\`\`\`javascript
+await db.deleteById('users', 1);
+await db.deleteById('users', 1, true); // Soft delete
+await db.deleteWhere('users', { status: 'inactive' });
+\`\`\`
 
-### 🔹 Core Queries
-- `query(sql, params)`
-- `getOne(sql, params)`
+#### Query
+\`\`\`javascript
+// Simple
+const users = await db.selectWhere('users', { status: 'active' });
+const user = await db.findOne('users', { email: 'test@example.com' });
 
-### 🔹 Inserts / Updates
-- `insert(table, data)`
-- `bulkInsert(table, dataArray)`
-- `updateById(table, id, data, idField = 'id')`
+// Advanced
+const results = await db.select('users', {
+  columns: ['id', 'name', 'email'],
+  where: { status: 'active' },
+  orderBy: [{ column: 'created_at', direction: 'DESC' }],
+  limit: 10,
+  offset: 0
+});
+\`\`\`
 
-### 🔹 Deletion
-- `deleteById(table, id, soft = false, idField = 'id')`
-- `truncate(table)`
+### Advanced Features
 
-### 🔹 Select & Filters
-- `selectWhere(table, conditions, options)`
-- `findOne(table, conditions)`
-- `getByIds(table, ids, idField)`
-- `count(table, conditions)`
-- `exists(table, conditions)`
+#### Pagination
+\`\`\`javascript
+const result = await db.paginate('posts', {
+  page: 2,
+  perPage: 20,
+  where: { published: true },
+  orderBy: [{ column: 'created_at', direction: 'DESC' }]
+});
+// Returns: { data: [...], pagination: { total, page, perPage, totalPages, hasNext, hasPrev } }
+\`\`\`
 
-### 🔹 Math Fields
-- `increment(table, id, field, amount, idField)`
-- `decrement(table, id, field, amount, idField)`
+#### Advanced Search
+\`\`\`javascript
+const users = await db.advancedSearch('users', {
+  age: { operator: '>', value: 18 },
+  email: { operator: 'LIKE', value: 'gmail.com' },
+  status: { operator: 'IN', value: ['active', 'pending'] },
+  created_at: { operator: 'BETWEEN', value: { min: '2024-01-01', max: '2024-12-31' } }
+});
+\`\`\`
 
-### 🔹 Utilities
-- `distinctValues(table, column)`
-- `search(table, fields, keyword)`
-- `transaction(callback)`
-- `logAudit(action, table, data, userId)`
+#### Aggregates
+\`\`\`javascript
+const total = await db.count('users', { status: 'active' });
+const sum = await db.sum('orders', 'amount', { status: 'completed' });
+const avg = await db.avg('products', 'price');
+const min = await db.min('products', 'price');
+const max = await db.max('products', 'price');
 
-### 🔹 Join Support
-- `join({ baseTable, joinTable, baseKey, joinKey, ... })`
-- `multiJoin({ baseTable, joins, columns, conditions })`
+// Custom aggregates
+const stats = await db.aggregate('orders', {
+  functions: [
+    { func: 'SUM', column: 'amount', alias: 'total' },
+    { func: 'AVG', column: 'amount', alias: 'average' },
+    { func: 'COUNT', column: '*', alias: 'count' }
+  ],
+  groupBy: ['status'],
+  where: { created_at: '2024-01-01' }
+});
+\`\`\`
 
----
- Features
-🔹 query() – Run raw SQL
-
-🔹 getOne() – Get first row or null
-
-🔹 insert() / bulkInsert() – Insert from object(s)
-
-🔹 updateById() – Update row by ID
-
-🔹 deleteById() – Soft/hard delete
-
-🔹 selectWhere() – Object-based filtering
-
-🔹 getByIds() – Get rows by ID list
-
-🔹 count() / exists() – Check row count or presence
-
-🔹 increment() / decrement() – Modify numeric fields
-
-🔹 distinctValues() – Get unique column values
-
-🔹 search() – Fuzzy search across fields
-
-🔹 join() / multiJoin() – JOINs, including FULL OUTER
-
-🔹 transaction() – Wrap logic in SQL transaction
-
-🔹 logAudit() – Write to audit logs
-
-🔹 generateCrudRoutes() – Auto REST routes with Express
-
-
-## 📚 Available Methods
-
-Here’s a full list of all available functions included in `mysql2-helper-lite`:
-
-| Category       | Method Name              | Description                                      |
-|----------------|---------------------------|--------------------------------------------------|
-| 🔹 Core         | `query(sql, params)`     | Run raw SQL and return all rows                 |
-|                | `getOne(sql, params)`    | Return the first row (or `null` if none)        |
-| 🔹 Insert/Update| `insert(table, data)`    | Insert a row using an object                    |
-|                | `bulkInsert(table, dataArray)` | Insert multiple rows at once              |
-|                | `updateById(table, id, data, idField)` | Update by ID using object            |
-| 🔹 Delete       | `deleteById(table, id, soft, idField)` | Soft/hard delete by ID              |
-|                | `truncate(table)`        | Truncate (clear) the entire table               |
-| 🔹 Select       | `selectWhere(table, conditions, options)` | Dynamic WHERE from object         |
-|                | `findOne(table, conditions)` | Get the first row matching conditions       |
-|                | `getByIds(table, ids, idField)` | Get rows by array of IDs                  |
-|                | `count(table, conditions)` | Count rows based on filter                  |
-|                | `exists(table, conditions)` | Check if at least one matching row exists   |
-| 🔹 Math Ops     | `increment(table, id, field, amount, idField)` | Increment numeric field           |
-|                | `decrement(table, id, field, amount, idField)` | Decrement numeric field           |
-| 🔹 Utilities    | `distinctValues(table, column)` | Get unique values in a column           |
-|                | `search(table, fields, keyword)` | LIKE search on multiple fields          |
-|                | `transaction(callback)` | Execute logic in a SQL transaction block       |
-|                | `logAudit(action, table, data, userId)` | Log changes to `audit_logs` table     |
-| 🔹 Joins        | `join({...})`            | Basic JOIN between two tables                  |
-|                | `multiJoin({...})`       | Advanced multi-table JOIN (incl. FULL OUTER)   |
-
-
-
-Nlet's walk through **how to test your RESTful APIs** generated via `generateCrudRoutes()` from your `mysql2-helper-lite` package.
-
----
-
-## ✅ What It Does (Recap)
-
-When you call:
-
-```js
-generateCrudRoutes(app, 'users', db);
-```
-
-It generates the following REST endpoints for the `users` table:
-
-| Method | Route          | Action                |
-|--------|----------------|------------------------|
-| GET    | `/users`       | Get all users         |
-| GET    | `/users/:id`   | Get one user by ID    |
-| POST   | `/users`       | Insert new user       |
-| PUT    | `/users/:id`   | Update user by ID     |
-| DELETE | `/users/:id`   | Soft delete user by ID|
-
-> ⚠️ You must have `'users'` in your `allowedTables` array when calling `createDb`.
-
----
-
-
-```js
-const express = require('express');
-const mysql = require('mysql2/promise');
-const { createDb, generateCrudRoutes } = require('mysql2-helper-lite');
-
-const app = express();
-app.use(express.json());
-
-const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  database: 'test_db'
+#### Hooks
+\`\`\`javascript
+db.addHook('before', 'insert', async (data) => {
+  // Validate or transform data
+  data.data.email = data.data.email.toLowerCase();
+  return data;
 });
 
-const db = createDb(pool, ['users'], { useTimestamps: true });
+db.addHook('after', 'insert', async (data) => {
+  console.log('New record inserted:', data.id);
+  return data;
+});
+\`\`\`
 
-generateCrudRoutes(app, 'users', db);
+#### Transactions
+\`\`\`javascript
+await db.transaction(async (connection) => {
+  await connection.execute('INSERT INTO users ...');
+  await connection.execute('INSERT INTO profiles ...');
+  // Auto-commits if no error, auto-rollbacks on error
+});
+\`\`\`
 
-app.listen(3000, () => console.log('🚀 Server running on http://localhost:3000'));
-```
+#### Cache
+\`\`\`javascript
+// Use cache
+const users = await db.selectWhere('users', {}, { useCache: true });
 
----
+// Clear cache
+db.clearCache('users'); // Clear specific table
+db.clearCache(); // Clear all
 
-## ✅ 2. Start the Server
+// Cache stats
+const stats = db.getCacheStats();
+\`\`\`
 
-```bash
-node your-test-file.js
-```
+## ⚙️ Configuration Options
 
----
+\`\`\`javascript
+const db = createDb(pool, allowedTables, {
+  useTimestamps: true,           // Auto-add created_at/updated_at
+  enableQueryCache: true,        // Enable query caching
+  cacheExpiry: 60000,           // Cache TTL in ms
+  enableHooks: true,            // Enable lifecycle hooks
+  defaultPagination: {          // Default pagination settings
+    limit: 50,
+    offset: 0
+  }
+});
+\`\`\`
 
-## ✅ 3. Test the API (via Postman, curl, or browser)
+## 🔒 Security Features
 
-### ➕ Create a user
-
-```http
-POST http://localhost:3000/users
-Content-Type: application/json
-
-{
-  "name": "Ranak",
-  "email": "ranak@example.com"
-}
-```
-
-### 📥 Get all users
-
-```http
-GET http://localhost:3000/users
-```
-
-### 🔍 Get one user
-
-```http
-GET http://localhost:3000/users/1
-```
-
-### ✏️ Update user
-
-```http
-PUT http://localhost:3000/users/1
-Content-Type: application/json
-
-{
-  "name": "Updated Name"
-}
-```
-
-### 🗑️ Soft delete user
-
-```http
-DELETE http://localhost:3000/users/1
-```
-
----
-
-## 🧪 Optional: Add More Tables
-
-```js
-generateCrudRoutes(app, 'posts', db);
-generateCrudRoutes(app, 'products', db);
-```
-
-As long as those tables exist and are listed in `allowedTables`, the routes will be ready.
-
----
-
-
-
-## 🧪 REST API Support
-
-Generate full CRUD endpoints automatically:
-
-```js
-generateCrudRoutes(app, 'users', db);
-```
-
-Creates:
-
-- `GET /users`
-- `GET /users/:id`
-- `POST /users`
-- `PUT /users/:id`
-- `DELETE /users/:id`
-
-
-
-
-## 🧑‍💻 Author
-
-**Ranak Debnath**  
-📧 [piyaldeb87@gmail.com](mailto:piyaldeb87@gmail.com)  
-🐙 GitHub: [@piyaldeb](https://github.com/piyaldeb)
-
----
+- ✅ Table whitelist validation
+- ✅ Parameterized queries (SQL injection prevention)
+- ✅ Dangerous SQL keyword detection in raw queries
+- ✅ Audit logging support
 
 ## 📄 License
 
-MIT — free to use, modify, and distribute.
+MIT
 
----
+## 🤝 Contributing
 
-## 🙌 Contributions
+Contributions welcome! Please open an issue or PR.
 
-PRs, ideas, and improvements are welcome!  
-If you like the project, give it a ⭐️ on GitHub.
+## 💬 Support
 
----
-
-```
-
----
-
+For issues and questions: [GitHub Issues](https://github.com/piyaldeb/mysql2-helper-lite.git/issues)
+\`\`\`
