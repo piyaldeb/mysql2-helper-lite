@@ -1,0 +1,27 @@
+{
+  "name": "mysql2-helper-lite",
+  "version": "3.0.0",
+  "description": "A lightweight helper for mysql2/promise to simplify common database operations.",
+  "main": "index.js",
+  "keywords": [
+    "mysql2",
+    "mysql",
+    "helper",
+    "database",
+    "promise",
+    "lightweight"
+  ],
+  "author": "Ranak Debnath <piyaldeb87@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "mysql2": "^3.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/piyaldeb/mysql2-helper-lite"
+  },
+  "bugs": {
+    "url": "https://github.com/piyaldeb/mysql2-helper-lite/issues"
+  },
+  "homepage": "https://github.com/piyaldeb/mysql2-helper-lite#readme"
+}
