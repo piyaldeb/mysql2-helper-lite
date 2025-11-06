@@ -1335,15 +1335,16 @@ sum: async (table, column, where = {}) => {
     },
 
     getPoolInfo: () => {
-      return {
-        totalConnections: pool.pool._allConnections.length,
-        activeConnections: pool.pool._allConnections.length - pool.pool._freeConnections.length,
-        freeConnections: pool.pool._freeConnections.length,
-        queueLength: pool.pool._connectionQueue.length
-      };
-    }
+  const stats = pool.pool ?? pool;
+  return {
+    totalConnections: stats._allConnections?.length ?? 0,
+    activeConnections: (stats._allConnections?.length ?? 0) - (stats._freeConnections?.length ?? 0),
+    freeConnections: stats._freeConnections?.length ?? 0,
+    queueLength: stats._connectionQueue?.length ?? 0
   };
+}
 
+  }
   return db;
 };
 
