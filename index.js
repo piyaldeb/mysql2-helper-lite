@@ -689,6 +689,209 @@ sum: async (table, column, where = {}) => {
       return results.map(row => row[column]);
     },
 
+    pivotTable: async (table, rowFields = [], columnField, valueField, options = {}) => {
+      validateTable(table);
+
+      if (!Array.isArray(rowFields) || rowFields.length === 0) {
+        throw new Error('pivotTable requires at least one row field.');
+      }
+      if (!columnField || typeof columnField !== 'string') {
+        throw new Error('pivotTable requires a columnField string.');
+      }
+      if (!valueField || typeof valueField !== 'string') {
+        throw new Error('pivotTable requires a valueField string.');
+      }
+
+      const {
+        aggregate = 'SUM',
+        filters = {},
+        includeTotals = true,
+        sortColumns = true,
+        defaultValue = 0
+      } = options;
+
+      const sanitizeField = (field) => {
+        if (typeof field !== 'string' || !field.trim()) {
+          throw new Error(`Invalid column name: ${field}`);
+        }
+        const trimmed = field.trim();
+        if (!/^[a-zA-Z0-9_.]+$/.test(trimmed)) {
+          throw new Error(`Unsafe column name: ${field}`);
+        }
+        return trimmed;
+      };
+
+      const normalizedRowFields = rowFields.map(sanitizeField);
+      const normalizedColumnField = sanitizeField(columnField);
+      const normalizedValueField = sanitizeField(valueField);
+
+      const allowedAggregates = ['SUM', 'COUNT', 'AVG', 'MIN', 'MAX'];
+      const upperAggregate = aggregate.toUpperCase();
+      if (!allowedAggregates.includes(upperAggregate)) {
+        throw new Error(`Unsupported aggregate function: ${aggregate}`);
+      }
+
+      const filterKeys = Object.keys(filters);
+      const filterValues = Object.values(filters);
+      const whereClause = filterKeys.length
+        ? `WHERE ${filterKeys.map(key => `\`${sanitizeField(key)}\` = ?`).join(' AND ')}`
+        : '';
+
+      const selectColumns = [...normalizedRowFields, normalizedColumnField, normalizedValueField]
+        .map(field => `\`${field}\``).join(', ');
+
+      const sql = `SELECT ${selectColumns} FROM \`${table}\`${whereClause ? ` ${whereClause}` : ''}`;
+      const dataRows = await db.query(sql, filterValues);
+
+      const extractNumeric = (row) => {
+        const raw = row[normalizedValueField];
+        if (raw === null || raw === undefined) return null;
+        const num = Number(raw);
+        return Number.isNaN(num) ? null : num;
+      };
+
+      const aggregators = {
+        SUM: {
+          init: () => 0,
+          accumulate: (state, row) => {
+            const value = extractNumeric(row);
+            if (value === null) return state;
+            return state + value;
+          },
+          finalize: (state, fallback) => state ?? fallback
+        },
+        COUNT: {
+          init: () => 0,
+          accumulate: (state, row) => {
+            const raw = row[normalizedValueField];
+            return state + (raw === null || raw === undefined ? 0 : 1);
+          },
+          finalize: (state) => state
+        },
+        AVG: {
+          init: () => ({ sum: 0, count: 0 }),
+          accumulate: (state, row) => {
+            const value = extractNumeric(row);
+            if (value === null) return state;
+            return { sum: state.sum + value, count: state.count + 1 };
+          },
+          finalize: (state, fallback) => state.count === 0 ? fallback : state.sum / state.count
+        },
+        MIN: {
+          init: () => null,
+          accumulate: (state, row) => {
+            const value = extractNumeric(row);
+            if (value === null) return state;
+            if (state === null) return value;
+            return Math.min(state, value);
+          },
+          finalize: (state, fallback) => state === null ? fallback : state
+        },
+        MAX: {
+          init: () => null,
+          accumulate: (state, row) => {
+            const value = extractNumeric(row);
+            if (value === null) return state;
+            if (state === null) return value;
+            return Math.max(state, value);
+          },
+          finalize: (state, fallback) => state === null ? fallback : state
+        }
+      };
+
+      const aggregator = aggregators[upperAggregate];
+
+      if (dataRows.length === 0) {
+        return {
+          rows: [],
+          columns: [],
+          columnTotals: includeTotals ? {} : null,
+          grandTotal: includeTotals ? aggregator.finalize(aggregator.init(), defaultValue) : null,
+          aggregate: upperAggregate
+        };
+      }
+
+      const pivotMap = new Map();
+      const columnValuesSet = new Set();
+      const columnTotals = new Map();
+      let grandTotal = aggregator.init();
+
+      for (const row of dataRows) {
+        const columnValue = row[normalizedColumnField];
+        columnValuesSet.add(columnValue);
+
+        const rowKeyValues = normalizedRowFields.map(field => row[field]);
+        const rowKey = JSON.stringify(rowKeyValues);
+
+        if (!pivotMap.has(rowKey)) {
+          const keyObj = {};
+          normalizedRowFields.forEach((field, index) => {
+            keyObj[field] = rowKeyValues[index];
+          });
+          pivotMap.set(rowKey, {
+            keys: keyObj,
+            cells: new Map(),
+            total: aggregator.init()
+          });
+        }
+
+        const pivotRow = pivotMap.get(rowKey);
+        const currentCell = pivotRow.cells.get(columnValue) ?? aggregator.init();
+        const updatedCell = aggregator.accumulate(currentCell, row);
+        pivotRow.cells.set(columnValue, updatedCell);
+
+        pivotRow.total = aggregator.accumulate(pivotRow.total, row);
+
+        const currentColumnTotal = columnTotals.get(columnValue) ?? aggregator.init();
+        columnTotals.set(columnValue, aggregator.accumulate(currentColumnTotal, row));
+
+        grandTotal = aggregator.accumulate(grandTotal, row);
+      }
+
+      const columnValues = Array.from(columnValuesSet);
+      if (sortColumns) {
+        columnValues.sort((a, b) => {
+          if (a === b) return 0;
+          if (a === null || a === undefined) return -1;
+          if (b === null || b === undefined) return 1;
+          return a > b ? 1 : -1;
+        });
+      }
+
+      const finalRows = Array.from(pivotMap.values()).map(pivotRow => {
+        const rowResult = { ...pivotRow.keys };
+        for (const columnValue of columnValues) {
+          const cellState = pivotRow.cells.get(columnValue);
+          rowResult[columnValue] = cellState === undefined
+            ? defaultValue
+            : aggregator.finalize(cellState, defaultValue);
+        }
+        if (includeTotals) {
+          rowResult.total = aggregator.finalize(pivotRow.total, defaultValue);
+        }
+        return rowResult;
+      });
+
+      let finalColumnTotals = null;
+      if (includeTotals) {
+        finalColumnTotals = {};
+        for (const columnValue of columnValues) {
+          const state = columnTotals.get(columnValue);
+          finalColumnTotals[columnValue] = state === undefined
+            ? defaultValue
+            : aggregator.finalize(state, defaultValue);
+        }
+      }
+
+      return {
+        rows: finalRows,
+        columns: columnValues,
+        columnTotals: includeTotals ? finalColumnTotals : null,
+        grandTotal: includeTotals ? aggregator.finalize(grandTotal, defaultValue) : null,
+        aggregate: upperAggregate
+      };
+    },
+
     chunk: async (table, chunkSize = 100, callback, where = {}) => {
       validateTable(table);
       let offset = 0;

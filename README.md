@@ -79,8 +79,9 @@ A powerful, feature-rich MySQL query builder and ORM for Node.js with advanced c
 
 * 🧰 **Data Processing**
 
-  * `pluck()` - Get array of single column values
-  * `chunk()` - Process large datasets in chunks
+* `pluck()` - Get array of single column values
+* `pivotTable()` - Build Excel-style pivot summaries
+* `chunk()` - Process large datasets in chunks
   * `incrementMany()` / `decrementMany()` - Update multiple fields at once
 
 * 🧾 **Database Management**
@@ -541,6 +542,31 @@ const avgRating = await db.avg('products', 'rating', { category: 'electronics' }
 
 const totalRevenue = await db.sum('orders', 'amount', { year: 2024 });
 // Returns: 1250000
+```
+
+---
+
+#### `pivotTable(table, rowFields, columnField, valueField, options)`
+Create Excel-style pivot summaries with row groupings, dynamic columns, and configurable aggregations.
+
+```javascript
+const pivot = await db.pivotTable(
+  'orders',
+  ['status'],
+  'region',
+  'amount',
+  { aggregate: 'SUM', includeTotals: true }
+);
+
+// pivot.rows =>
+// [
+//   { status: 'completed', north: 1200, south: 800, total: 2000 },
+//   { status: 'pending', north: 500, south: 400, total: 900 }
+// ]
+//
+// pivot.columns => ['north', 'south']
+// pivot.columnTotals => { north: 1700, south: 1200 }
+// pivot.grandTotal => 2900
 ```
 
 ---
