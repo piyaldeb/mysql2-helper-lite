@@ -5,6 +5,110 @@ A powerful, feature-rich MySQL query builder and ORM for Node.js with advanced c
 [![npm version](https://img.shields.io/npm/v/mysql-db-helper.svg)](https://www.npmjs.com/package/mysql2-helper-lite)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+
+
+### [5.0.0] - 2025-11-06
+
+#### 🎉 Major Release - Next-Gen Database Helper
+
+#### Added
+
+* ⚡ **Bulk Operations**
+
+  * `bulkInsertAndReturn()` - Insert multiple records and return them
+  * `bulkUpsert()` - Bulk insert or update on conflict
+  * `batchDelete()` - Delete multiple records by IDs
+
+* 🧠 **Smart CRUD Helpers**
+
+  * `updateByIdAndReturn()` - Update and return updated record
+  * `findOrCreate()` - Find existing or create new
+  * `findOneAndUpdate()` - Find and update in one operation
+  * `findOneAndDelete()` - Find and delete in one operation
+
+* 📄 **Advanced Pagination**
+
+  * `cursorPaginate()` - Cursor-based pagination for large datasets
+
+* 🧩 **Record Utilities**
+
+  * `first()` / `last()` - Get first or last record
+  * `random()` - Get random record(s)
+  * `clone()` - Clone or duplicate a record
+  * `isDuplicate()` - Check for duplicate records
+
+* 🗑️ **Soft Delete Enhancements**
+
+  * `restore()` / `restoreWhere()` - Restore soft-deleted records
+  * `onlyTrashed()` - Get only deleted records
+  * `withTrashed()` - Get all including deleted
+
+* 📦 **JSON Column Operations**
+
+  * `jsonExtract()` - Extract values from JSON columns
+  * `jsonContains()` - Search within JSON columns
+
+* 🗓️ **Date/Time Queries**
+
+  * `whereDateBetween()` - Query date ranges
+  * `whereDate()` / `whereYear()` / `whereMonth()` / `whereDay()`
+  * `createdToday()` / `createdThisWeek()` / `createdThisMonth()` / `createdThisYear()`
+
+* 📊 **Statistical Functions**
+
+  * `median()` - Calculate median value
+  * `percentile()` - Get percentile values
+  * `countBy()` - Count with grouping
+  * `groupConcat()` - Concatenate grouped values
+
+* 🔍 **Query Builder Methods**
+
+  * `whereIn()` / `whereNotIn()` - IN/NOT IN queries
+  * `whereBetween()` / `whereNotBetween()` - BETWEEN queries
+  * `whereNull()` / `whereNotNull()` - NULL checks
+  * `whereGreaterThan()` / `whereLessThan()` - Comparison queries
+  * `whereStartsWith()` / `whereEndsWith()` / `whereContains()` - String queries
+  * `whereLike()` - Case-sensitive/insensitive LIKE
+
+* 🤝 **Relationship Helpers**
+
+  * `hasOne()` - One-to-one relationship
+  * `hasMany()` - One-to-many relationship
+  * `belongsTo()` - Inverse of hasMany
+  * `belongsToMany()` - Many-to-many with pivot table
+
+* 🧰 **Data Processing**
+
+  * `pluck()` - Get array of single column values
+  * `chunk()` - Process large datasets in chunks
+  * `incrementMany()` / `decrementMany()` - Update multiple fields at once
+
+* 🧾 **Database Management**
+
+  * `getTableInfo()` - Table size, row count, and storage info
+  * `listTables()` - List all database tables
+  * `tableExists()` - Check if table exists
+  * `optimizeTable()` - Optimize table
+  * `analyzeTable()` - Analyze table for optimization
+  * `getDatabaseStats()` - Database-wide statistics
+  * `getPoolInfo()` - Connection pool statistics
+  * `rawUnsafe()` - Execute raw SQL without keyword restrictions
+
+#### Changed
+
+* ⚙️ Optimized caching system with improved invalidation
+* ⚡ Faster performance and reduced query latency
+* 🔁 Better transaction rollback handling
+* 🧩 Enhanced hook support for async operations
+* 🧹 Cleaned up and standardized CRUD naming conventions
+
+#### Security
+
+* 🛡️ Safer raw SQL execution with `rawUnsafe` opt-in
+* ✅ Improved validation for bulk and batch operations
+* 🔐 Stronger query parameter sanitization
+
+
 ## 📦 Installation
 
 ```bash
@@ -1525,9 +1629,9 @@ A: Yes, use `db.raw()` for custom queries, but note that dangerous keywords are 
 
 ## 💬 Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/mysql-db-helper/issues)
-- **Documentation**: [Full Docs](https://github.com/yourusername/mysql-db-helper/wiki)
-- **Email**: support@example.com
+- **Issues**: [GitHub Issues](https://github.com/piyaldeb/mysql2-helper-lite/issues)
+<!-- - **Documentation**: [Full Docs](https://github.com/yourusername/mysql-db-helper/wiki) -->
+- **Email**: piyaldeb87@gmail.com
 
 ---
 

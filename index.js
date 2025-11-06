@@ -3,12 +3,15 @@ const generateCrudRoutes = require('./generateCrudRoutes');
 
 const createDb = (pool, allowedTables = [], options = {}) => {
   const { 
-    useTimestamps = true,
-    enableQueryCache = false,
-    cacheExpiry = 60000,
-    enableHooks = true,
-    defaultPagination = { limit: 50, offset: 0 }
-  } = options;
+    useTimestamps = true,              // automatically add created_at / updated_at
+    enableQueryCache = false,          // toggle in-memory caching of queries
+    cacheExpiry = 60000,               // cache duration (ms)
+    enableHooks = true,                // enable before/after hooks
+    defaultPagination = { limit: 50, offset: 0 } // default pagination settings
+  } = {
+    ...options // allow user overrides
+  };
+
 
   const queryCache = new Map();
   const hooks = { before: {}, after: {} };
@@ -550,10 +553,13 @@ const createDb = (pool, allowedTables = [], options = {}) => {
 
     truncate: async (table) => {
       validateTable(table);
-      const sql = `TRUNCATE TABLE \`${table}\``;
+      await db.query('SET FOREIGN_KEY_CHECKS = 0');
+      await db.query(`TRUNCATE TABLE \`${table}\``);
+      await db.query('SET FOREIGN_KEY_CHECKS = 1');
       clearCacheForTable(table);
-      return await db.query(sql);
+      return true;
     },
+
 
     increment: async (table, id, field, amount = 1, idField = 'id') => {
       validateTable(table);
@@ -600,10 +606,11 @@ const createDb = (pool, allowedTables = [], options = {}) => {
         having = ''
       } = options;
 
-      const funcClauses = functions.map(f => 
-        `${f.func}(\`${f.column}\`) as ${f.alias || f.column}`
-      ).join(', ');
-      
+      const funcClauses = functions.map(f => {
+      const col = f.column === '*' ? '*' : `\`${f.column}\``;
+      return `${f.func}(${col}) as ${f.alias || f.column}`;
+    }).join(', ');
+
       const whereKeys = Object.keys(where);
       const whereValues = Object.values(where);
       const whereClause = whereKeys.length > 0 
@@ -644,20 +651,21 @@ const createDb = (pool, allowedTables = [], options = {}) => {
     },
 
     avg: async (table, column, where = {}) => {
-      const result = await db.aggregate(table, {
-        functions: [{ func: 'AVG', column, alias: 'avg_value' }],
-        where
-      });
-      return result[0]?.avg_value || null;
-    },
+  const result = await db.aggregate(table, {
+    functions: [{ func: 'AVG', column, alias: 'avg_value' }],
+    where
+  });
+  return result.length ? Number(result[0].avg_value) : 0;
+},
 
-    sum: async (table, column, where = {}) => {
-      const result = await db.aggregate(table, {
-        functions: [{ func: 'SUM', column, alias: 'sum_value' }],
-        where
-      });
-      return result[0]?.sum_value || null;
-    },
+sum: async (table, column, where = {}) => {
+  const result = await db.aggregate(table, {
+    functions: [{ func: 'SUM', column, alias: 'sum_value' }],
+    where
+  });
+  return result.length ? Number(result[0].sum_value) : 0;
+},
+
 
     distinctValues: async (table, column) => {
       validateTable(table);
@@ -938,24 +946,28 @@ const createDb = (pool, allowedTables = [], options = {}) => {
     },
 
     median: async (table, column, where = {}) => {
-      validateTable(table);
-      const whereKeys = Object.keys(where);
-      const whereValues = Object.values(where);
-      
-      let sql = `
-        SELECT AVG(t.${column}) as median_value
-        FROM (
-          SELECT @rownum:=@rownum+1 as row_number, d.${column}
-          FROM \`${table}\` d, (SELECT @rownum:=0) r
-          ${whereKeys.length > 0 ? `WHERE ${whereKeys.map(k => `\`${k}\` = ?`).join(' AND ')}` : ''}
-          ORDER BY d.${column}
-        ) as t
-        WHERE t.row_number IN (FLOOR((@rownum+1)/2), FLOOR((@rownum+2)/2))
-      `;
-      
-      const result = await db.getOne(sql, whereValues);
-      return result?.median_value || null;
-    },
+    validateTable(table);
+    const whereKeys = Object.keys(where);
+    const whereValues = Object.values(where);
+    
+    const whereClause = whereKeys.length > 0
+      ? `WHERE ${whereKeys.map(k => `\`${k}\` = ?`).join(' AND ')}`
+      : '';
+    
+    let sql = `
+      SELECT AVG(t.${column}) as median_value
+      FROM (
+        SELECT @rownum:=@rownum+1 as row_number, d.${column}
+        FROM \`${table}\` d, (SELECT @rownum:=0) r
+        ${whereClause}
+        ORDER BY d.${column}
+      ) as t
+      WHERE t.row_number IN (FLOOR((@rownum+1)/2), FLOOR((@rownum+2)/2))
+    `;
+
+    const result = await db.getOne(sql, whereValues);
+    return result ? Number(result.median_value) : 0;
+  },
 
     percentile: async (table, column, percentile = 50, where = {}) => {
       validateTable(table);
