@@ -1,6 +1,6 @@
 {
   "name": "mysql2-helper-lite",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "A powerful, feature-rich MySQL query builder and ORM for Node.js with advanced caching, hooks, pagination, and full CRUD support.",
   "keywords": [
     "mysql2",
