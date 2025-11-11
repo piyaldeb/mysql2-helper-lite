@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MySQL2 Helper Lite - Advanced MySQL Query Builder for Node.js</title>
+    <meta name="description" content="A powerful MySQL query builder and ORM for Node.js with 16 creative functions beyond mysql2!">
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --code-bg: #0f172a;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: var(--light);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.1;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .badges {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+
+        .badge {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+            text-align: center;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--gray);
+            font-size: 1.25rem;
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .feature-desc {
+            color: var(--gray);
+            line-height: 1.7;
+        }
+
+        .code-block {
+            background: var(--code-bg);
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .code-block code {
+            color: #e2e8f0;
+        }
+
+        .highlight-blue { color: #60a5fa; }
+        .highlight-green { color: #34d399; }
+        .highlight-yellow { color: #fbbf24; }
+        .highlight-pink { color: #f472b6; }
+        .highlight-purple { color: #a78bfa; }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .creative-functions {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 2rem;
+            margin: 4rem 0;
+            border-radius: 16px;
+        }
+
+        .creative-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .creative-item {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .creative-item:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(4px);
+        }
+
+        .creative-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .creative-desc {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-link:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        .install-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            margin: 2rem 0;
+        }
+
+        .install-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>🚀 MySQL2 Helper Lite</h1>
+            <p class="hero-subtitle">
+                The Most Advanced MySQL Query Builder for Node.js<br>
+                <strong>16 Creative Functions Beyond mysql2!</strong>
+            </p>
+
+            <div class="badges">
+                <span class="badge">v6.0.0</span>
+                <span class="badge">MIT License</span>
+                <span class="badge">Node.js ≥14</span>
+                <span class="badge">MySQL 5.7+</span>
+            </div>
+
+            <div class="cta-buttons">
+                <a href="https://www.npmjs.com/package/mysql2-helper-lite" class="btn btn-primary" target="_blank">
+                    📦 View on NPM
+                </a>
+                <a href="https://github.com/piyaldeb/mysql2-helper-lite" class="btn btn-secondary" target="_blank">
+                    ⭐ Star on GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <div class="container">
+        <div class="stats">
+            <div class="stat-card">
+                <span class="stat-number">16</span>
+                <div class="stat-label">Creative Functions</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">100+</span>
+                <div class="stat-label">Built-in Methods</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">0</span>
+                <div class="stat-label">Breaking Changes</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">5</span>
+                <div class="stat-label">Critical Fixes</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Installation -->
+    <div class="container">
+        <div class="install-section">
+            <h2 class="install-title">⚡ Quick Installation</h2>
+            <div class="code-block">
+<span class="highlight-pink">npm</span> <span class="highlight-blue">install</span> <span class="highlight-green">mysql2-helper-lite</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Start -->
+    <div class="container">
+        <div class="section">
+            <h2 class="section-title">🎯 Quick Start</h2>
+            <p class="section-subtitle">Get up and running in 30 seconds</p>
+
+            <div class="code-block">
+<span class="highlight-purple">const</span> mysql = <span class="highlight-blue">require</span>(<span class="highlight-green">'mysql2/promise'</span>);
+<span class="highlight-purple">const</span> { createDb } = <span class="highlight-blue">require</span>(<span class="highlight-green">'mysql2-helper-lite'</span>);
+
+<span class="highlight-yellow">// Create connection pool</span>
+<span class="highlight-purple">const</span> pool = mysql.<span class="highlight-blue">createPool</span>({
+  host: <span class="highlight-green">'localhost'</span>,
+  user: <span class="highlight-green">'root'</span>,
+  password: <span class="highlight-green">'password'</span>,
+  database: <span class="highlight-green">'mydb'</span>
+});
+
+<span class="highlight-yellow">// Initialize with allowed tables</span>
+<span class="highlight-purple">const</span> db = <span class="highlight-blue">createDb</span>(pool, [<span class="highlight-green">'users'</span>, <span class="highlight-green">'posts'</span>]);
+
+<span class="highlight-yellow">// Start using!</span>
+<span class="highlight-purple">const</span> users = <span class="highlight-purple">await</span> db.<span class="highlight-blue">selectWhere</span>(<span class="highlight-green">'users'</span>, { status: <span class="highlight-green">'active'</span> });
+            </div>
+        </div>
+    </div>
+
+    <!-- Creative Functions Section -->
+    <div class="container">
+        <div class="creative-functions">
+            <h2 class="section-title" style="color: white;">✨ 16 Creative Functions</h2>
+            <p class="section-subtitle" style="color: rgba(255,255,255,0.9);">
+                Powerful features not available in standard mysql2
+            </p>
+
+            <div class="creative-list">
+                <div class="creative-item">
+                    <div class="creative-name">🔍 diff()</div>
+                    <div class="creative-desc">Compare two records and see only what changed</div>
+                </div>
+                <div class="creative-item">
+                    <div class="creative-name">🔄 bulkConditionalUpdate()</div>
+                    <div class="creative-desc">Update multiple records with different conditions</div>
+                </div>
+                <div class="creative-item">
+                    <div class="creative-name">⏰ timeTravel()</div>
+                    <div class="creative-desc">Query records as they were at any timestamp</div>
+                </div>
+                <div class="creative-item">
+                    <div class="creative-name">🔗 smartMerge()</div>
+                    <div class="creative-desc">Merge data from multiple tables intelligently</div>
+                </div>
+                <div class="creative-item">
+                    <div class="creative-name">🎯 fuzzySearch()</div>
+                    <div class="creative-desc">Typo-tolerant search with relevance scoring</div>
+                </div>
+                <div class="creative-item">
+                    <div class="creative-name">🎲 weightedRandom()</div>
+                    <div class="creative-desc">Random selection with weighted probability</div>
+                </div>
+                <div class="creative-item">
+                    <div class="creative-name">⚙️ batchTransform()</div>
+                    <div class="creative-desc">Apply functions to all records in chunks</div>
+                </div>
+                <div class="creative-item">
+                    <div class="creative-name">💾 snapshot()</div>
+                    <div class="creative-desc">Create instant backup snapshots of tables</div>
+                </div>
+                <div class="creative-item">
+                    <div class="creative-name">📝 createVersion()</div>
+                    <div class="creative-desc">Automatic record versioning system</div>
+                </div>
+                <div class="creative-item">
+                    <div class="creative-name">📊 conditionalAggregate()</div>
+                    <div class="creative-desc">Aggregate with conditional logic (CASE WHEN)</div>
+                </div>
+                <div class="creative-item">
+                    <div class="creative-name">🏆 rank()</div>
+                    <div class="creative-desc">Advanced ranking with tie handling</div>
+                </div>
+                <div class="creative-item">
+                    <div class="creative-name">📈 movingAverage()</div>
+                    <div class="creative-desc">Calculate moving averages for time series</div>
+                </div>
+                <div class="creative-item">
+                    <div class="creative-name">🔎 findDuplicates()</div>
+                    <div class="creative-desc">Intelligent duplicate detection</div>
+                </div>
+                <div class="creative-item">
+                    <div class="creative-name">🔥 warmCache()</div>
+                    <div class="creative-desc">Pre-load frequently accessed data</div>
+                </div>
+                <div class="creative-item">
+                    <div class="creative-name">🌊 cascadeUpdate()</div>
+                    <div class="creative-desc">Update record and all related records</div>
+                </div>
+                <div class="creative-item">
+                    <div class="creative-name">📉 queryStats()</div>
+                    <div class="creative-desc">Analyze query performance patterns</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="container">
+        <div class="section">
+            <h2 class="section-title">💎 Core Features</h2>
+            <p class="section-subtitle">Everything you need for modern database operations</p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Lightning Fast</h3>
+                    <p class="feature-desc">
+                        Built-in query caching with smart invalidation. Slow query detection (>500ms) helps you optimize performance.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3 class="feature-title">Ultra Secure</h3>
+                    <p class="feature-desc">
+                        Table whitelisting, parameterized queries, and SQL injection prevention built-in. Your data stays safe.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📦</div>
+                    <h3 class="feature-title">Complete CRUD</h3>
+                    <p class="feature-desc">
+                        100+ methods for insert, update, delete, select operations. Soft deletes, bulk operations, and more.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎣</div>
+                    <h3 class="feature-title">Lifecycle Hooks</h3>
+                    <p class="feature-desc">
+                        before/after hooks for all operations. Perfect for validation, logging, and business logic.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📄</div>
+                    <h3 class="feature-title">Smart Pagination</h3>
+                    <p class="feature-desc">
+                        Offset and cursor-based pagination. Perfect for infinite scroll and large datasets.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔗</div>
+                    <h3 class="feature-title">Advanced Joins</h3>
+                    <p class="feature-desc">
+                        Multi-table joins with all join types. Relationship helpers (hasOne, hasMany, belongsTo).
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Aggregations</h3>
+                    <p class="feature-desc">
+                        SUM, AVG, MIN, MAX, COUNT, median, percentile. Pivot tables and grouping support.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3 class="feature-title">Full-Text Search</h3>
+                    <p class="feature-desc">
+                        Advanced search with operators (LIKE, IN, BETWEEN). Full-text search with relevance scoring.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3 class="feature-title">Transactions</h3>
+                    <p class="feature-desc">
+                        Easy transaction handling with automatic rollback on errors. Keep your data consistent.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Use Cases -->
+    <div class="container">
+        <div class="section">
+            <h2 class="section-title">🎯 Perfect For</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🛒</div>
+                    <h3 class="feature-title">E-Commerce</h3>
+                    <p class="feature-desc">
+                        Product catalogs, inventory management, order processing with transactions.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Analytics</h3>
+                    <p class="feature-desc">
+                        Dashboards, reports, moving averages, conditional aggregates for BI.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3 class="feature-title">Content Management</h3>
+                    <p class="feature-desc">
+                        Blogs, CMS, versioning, full-text search, and soft deletes.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3 class="feature-title">Social Networks</h3>
+                    <p class="feature-desc">
+                        User profiles, activity feeds, relationships, and leaderboards.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Example -->
+    <div class="container">
+        <div class="section">
+            <h2 class="section-title">💻 Real-World Example</h2>
+            <p class="section-subtitle">See how easy it is to build powerful features</p>
+
+            <div class="code-block">
+<span class="highlight-yellow">// Find and merge duplicate customers</span>
+<span class="highlight-purple">const</span> dupes = <span class="highlight-purple">await</span> db.<span class="highlight-blue">findDuplicates</span>(<span class="highlight-green">'customers'</span>, [<span class="highlight-green">'email'</span>, <span class="highlight-green">'phone'</span>]);
+
+<span class="highlight-yellow">// Compare order history</span>
+<span class="highlight-purple">const</span> changes = <span class="highlight-purple">await</span> db.<span class="highlight-blue">diff</span>(<span class="highlight-green">'orders'</span>, <span class="highlight-pink">123</span>, <span class="highlight-pink">124</span>);
+
+<span class="highlight-yellow">// Time travel to see old data</span>
+<span class="highlight-purple">const</span> historical = <span class="highlight-purple">await</span> db.<span class="highlight-blue">timeTravel</span>(
+  <span class="highlight-green">'users'</span>,
+  <span class="highlight-purple">new</span> <span class="highlight-blue">Date</span>(<span class="highlight-green">'2024-01-01'</span>),
+  { id: <span class="highlight-pink">1</span> }
+);
+
+<span class="highlight-yellow">// Fuzzy search with typo tolerance</span>
+<span class="highlight-purple">const</span> results = <span class="highlight-purple">await</span> db.<span class="highlight-blue">fuzzySearch</span>(<span class="highlight-green">'products'</span>, <span class="highlight-green">'name'</span>, <span class="highlight-green">'iPhon'</span>);
+
+<span class="highlight-yellow">// Create instant backup before migration</span>
+<span class="highlight-purple">const</span> backup = <span class="highlight-purple">await</span> db.<span class="highlight-blue">snapshot</span>(<span class="highlight-green">'users'</span>, <span class="highlight-green">'before_migration'</span>);
+
+<span class="highlight-yellow">// Rank users with tie handling</span>
+<span class="highlight-purple">const</span> leaderboard = <span class="highlight-purple">await</span> db.<span class="highlight-blue">rank</span>(<span class="highlight-green">'users'</span>, <span class="highlight-green">'score'</span>, {
+  partitionBy: <span class="highlight-green">'country'</span>,
+  limit: <span class="highlight-pink">100</span>
+});
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p style="font-size: 1.5rem; margin-bottom: 1rem;">
+            Made with ❤️ for the developer community
+        </p>
+        <div class="footer-links">
+            <a href="https://github.com/piyaldeb/mysql2-helper-lite" class="footer-link" target="_blank">GitHub</a>
+            <a href="https://www.npmjs.com/package/mysql2-helper-lite" class="footer-link" target="_blank">NPM</a>
+            <a href="https://github.com/piyaldeb/mysql2-helper-lite/blob/main/README.md" class="footer-link" target="_blank">Documentation</a>
+            <a href="https://github.com/piyaldeb/mysql2-helper-lite/blob/main/CHANGELOG.md" class="footer-link" target="_blank">Changelog</a>
+            <a href="https://github.com/piyaldeb/mysql2-helper-lite/issues" class="footer-link" target="_blank">Report Issue</a>
+        </div>
+        <p style="margin-top: 2rem; opacity: 0.7;">
+            © 2025 Ranak Debnath | MIT License | v6.0.0
+        </p>
+    </footer>
+</body>
+</html>
