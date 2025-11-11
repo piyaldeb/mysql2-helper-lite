@@ -1,7 +1,7 @@
 {
   "name": "mysql2-helper-lite",
-  "version": "5.0.4",
-  "description": "A powerful, feature-rich MySQL query builder and ORM for Node.js with advanced caching, hooks, pagination, and full CRUD support.",
+  "version": "6.0.0",
+  "description": "A powerful, feature-rich MySQL query builder and ORM for Node.js with advanced caching, hooks, pagination, full CRUD support, and 16 creative functions beyond mysql2!",
   "keywords": [
     "mysql2",
     "mysql",
@@ -13,7 +13,8 @@
   "author": "Ranak Debnath <piyaldeb87@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "mysql2": "^3.15.3"
+    "mysql2": "^3.15.3",
+    "sqlstring": "^2.3.3"
   },
   "repository": {
     "type": "git",

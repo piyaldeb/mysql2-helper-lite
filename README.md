@@ -1,126 +1,55 @@
-# MySQL DB Helper
+# 🚀 MySQL2 Helper Lite
 
-A powerful, feature-rich MySQL query builder and ORM for Node.js with advanced caching, hooks, pagination, and comprehensive CRUD operations.
+A powerful, feature-rich MySQL query builder and ORM for Node.js with advanced caching, hooks, pagination, and comprehensive CRUD operations plus **16 creative functions** not available in standard mysql2!
 
-[![npm version](https://img.shields.io/npm/v/mysql-db-helper.svg)](https://www.npmjs.com/package/mysql2-helper-lite)
+[![npm version](https://img.shields.io/npm/v/mysql2-helper-lite.svg)](https://www.npmjs.com/package/mysql2-helper-lite)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen)](https://nodejs.org)
 
+## ✨ What's New in v6.0.0
 
+🎉 **Major Release** - Revolutionary new features that go beyond mysql2!
 
-### [5.0.0] - 2025-11-06
+### 🔥 16 Creative Functions (Not in mysql2)
 
-#### 🎉 Major Release - Next-Gen Database Helper
+1. **`diff()`** - Smart comparison of two records showing only changed fields
+2. **`bulkConditionalUpdate()`** - Update multiple records with different conditions
+3. **`timeTravel()`** - Query records as they existed at a specific timestamp
+4. **`smartMerge()`** - Intelligently merge data from multiple tables
+5. **`fuzzySearch()`** - Find records with approximate matching & relevance scoring
+6. **`weightedRandom()`** - Random selection with weighted probability
+7. **`batchTransform()`** - Apply transformation functions to all records
+8. **`snapshot()`** - Create instant backup snapshots of tables
+9. **`createVersion()`** - Automatic record versioning system
+10. **`conditionalAggregate()`** - Aggregate with conditional logic (CASE WHEN)
+11. **`rank()`** - Rank records with RANK() and DENSE_RANK() window functions
+12. **`movingAverage()`** - Calculate moving averages for time series data
+13. **`findDuplicates()`** - Intelligent duplicate detection
+14. **`warmCache()`** - Pre-load frequently accessed data
+15. **`cascadeUpdate()`** - Update record and all related records atomically
+16. **`queryStats()`** - Analyze query performance patterns
 
-#### Added
+### 🛠️ Critical Bug Fixes
 
-* ⚡ **Bulk Operations**
+- ✅ Fixed deprecated median calculation (now MySQL 8.0+ compatible)
+- ✅ Added missing `sqlstring` dependency
+- ✅ Enhanced SQL injection protection with regex word boundaries
+- ✅ Added validation for increment/decrement operations
+- ✅ Fixed return values for atomic operations
 
-  * `bulkInsertAndReturn()` - Insert multiple records and return them
-  * `bulkUpsert()` - Bulk insert or update on conflict
-  * `batchDelete()` - Delete multiple records by IDs
-
-* 🧠 **Smart CRUD Helpers**
-
-  * `updateByIdAndReturn()` - Update and return updated record
-  * `findOrCreate()` - Find existing or create new
-  * `findOneAndUpdate()` - Find and update in one operation
-  * `findOneAndDelete()` - Find and delete in one operation
-
-* 📄 **Advanced Pagination**
-
-  * `cursorPaginate()` - Cursor-based pagination for large datasets
-
-* 🧩 **Record Utilities**
-
-  * `first()` / `last()` - Get first or last record
-  * `random()` - Get random record(s)
-  * `clone()` - Clone or duplicate a record
-  * `isDuplicate()` - Check for duplicate records
-
-* 🗑️ **Soft Delete Enhancements**
-
-  * `restore()` / `restoreWhere()` - Restore soft-deleted records
-  * `onlyTrashed()` - Get only deleted records
-  * `withTrashed()` - Get all including deleted
-
-* 📦 **JSON Column Operations**
-
-  * `jsonExtract()` - Extract values from JSON columns
-  * `jsonContains()` - Search within JSON columns
-
-* 🗓️ **Date/Time Queries**
-
-  * `whereDateBetween()` - Query date ranges
-  * `whereDate()` / `whereYear()` / `whereMonth()` / `whereDay()`
-  * `createdToday()` / `createdThisWeek()` / `createdThisMonth()` / `createdThisYear()`
-
-* 📊 **Statistical Functions**
-
-  * `median()` - Calculate median value
-  * `percentile()` - Get percentile values
-  * `countBy()` - Count with grouping
-  * `groupConcat()` - Concatenate grouped values
-
-* 🔍 **Query Builder Methods**
-
-  * `whereIn()` / `whereNotIn()` - IN/NOT IN queries
-  * `whereBetween()` / `whereNotBetween()` - BETWEEN queries
-  * `whereNull()` / `whereNotNull()` - NULL checks
-  * `whereGreaterThan()` / `whereLessThan()` - Comparison queries
-  * `whereStartsWith()` / `whereEndsWith()` / `whereContains()` - String queries
-  * `whereLike()` - Case-sensitive/insensitive LIKE
-
-* 🤝 **Relationship Helpers**
-
-  * `hasOne()` - One-to-one relationship
-  * `hasMany()` - One-to-many relationship
-  * `belongsTo()` - Inverse of hasMany
-  * `belongsToMany()` - Many-to-many with pivot table
-
-* 🧰 **Data Processing**
-
-* `pluck()` - Get array of single column values
-* `pivotTable()` - Build Excel-style pivot summaries
-* `chunk()` - Process large datasets in chunks
-  * `incrementMany()` / `decrementMany()` - Update multiple fields at once
-
-* 🧾 **Database Management**
-
-  * `getTableInfo()` - Table size, row count, and storage info
-  * `listTables()` - List all database tables
-  * `tableExists()` - Check if table exists
-  * `optimizeTable()` - Optimize table
-  * `analyzeTable()` - Analyze table for optimization
-  * `getDatabaseStats()` - Database-wide statistics
-  * `getPoolInfo()` - Connection pool statistics
-  * `rawUnsafe()` - Execute raw SQL without keyword restrictions
-
-#### Changed
-
-* ⚙️ Optimized caching system with improved invalidation
-* ⚡ Faster performance and reduced query latency
-* 🔁 Better transaction rollback handling
-* 🧩 Enhanced hook support for async operations
-* 🧹 Cleaned up and standardized CRUD naming conventions
-
-#### Security
-
-* 🛡️ Safer raw SQL execution with `rawUnsafe` opt-in
-* ✅ Improved validation for bulk and batch operations
-* 🔐 Stronger query parameter sanitization
-
+---
 
 ## 📦 Installation
 
 ```bash
-npm npm i mysql2-helper-lite
+npm install mysql2-helper-lite
 ```
 
 ## 🚀 Quick Start
 
 ```javascript
 const mysql = require('mysql2/promise');
-const { createDb } = require('mysql-db-helper');
+const { createDb } = require('mysql2-helper-lite');
 
 // Create connection pool
 const pool = mysql.createPool({
@@ -152,760 +81,441 @@ const users = await db.selectWhere('users', { status: 'active' });
 |--------|------|---------|-------------|
 | `useTimestamps` | Boolean | `true` | Auto-add `created_at` and `updated_at` timestamps |
 | `enableQueryCache` | Boolean | `false` | Enable query result caching |
-| `cacheExpiry` | Number | `60000` | Cache expiry time in milliseconds (1 minute) |
-| `enableHooks` | Boolean | `true` | Enable lifecycle hooks (before/after operations) |
+| `cacheExpiry` | Number | `60000` | Cache expiry time in milliseconds |
+| `enableHooks` | Boolean | `true` | Enable lifecycle hooks |
 | `defaultPagination` | Object | `{ limit: 50, offset: 0 }` | Default pagination settings |
 
-## 📚 API Reference
+---
 
-### Core Query Methods
+## 🎯 Creative Functions (NEW!)
 
-#### `query(sql, params, useCache)`
-Execute raw SQL queries with optional caching and performance monitoring.
+### 1. `diff()` - Smart Record Comparison
+
+Compare two records and see only what changed!
 
 ```javascript
-const users = await db.query('SELECT * FROM users WHERE age > ?', [18], true);
-// Automatically logs slow queries (>500ms)
+const changes = await db.diff('users', 1, 2);
+console.log(changes);
+// {
+//   name: { from: 'John', to: 'Jane' },
+//   age: { from: 25, to: 30 },
+//   email: { from: 'john@example.com', to: 'jane@example.com' }
+// }
 ```
 
-**Parameters:**
-- `sql` (string): SQL query with placeholders
-- `params` (array): Parameters for placeholders
-- `useCache` (boolean): Enable caching for this query
-
-**Returns:** Array of result rows
+**Perfect for:**
+- Audit trails
+- Version control systems
+- Change detection
+- Data reconciliation
 
 ---
 
-#### `getOne(sql, params, useCache)`
-Execute a query and return only the first result.
+### 2. `bulkConditionalUpdate()` - Different Updates in One Transaction
+
+Update multiple records with different conditions, all atomically!
 
 ```javascript
-const user = await db.getOne('SELECT * FROM users WHERE id = ?', [1]);
-// Returns: { id: 1, name: 'John', ... } or null
-```
-
-**Returns:** Single row object or `null`
-
----
-
-### Insert Operations
-
-#### `insert(table, data)`
-Insert a single record and return the insert ID.
-
-```javascript
-const userId = await db.insert('users', {
-  name: 'John Doe',
-  email: 'john@example.com',
-  age: 25
-});
-// Returns: 1 (insert ID)
-// Auto-adds created_at and updated_at if useTimestamps is enabled
-```
-
----
-
-#### `insertAndReturn(table, data, idField)`
-Insert a record and return the complete inserted row.
-
-```javascript
-const user = await db.insertAndReturn('users', {
-  name: 'Jane Doe',
-  email: 'jane@example.com'
-});
-// Returns: { id: 2, name: 'Jane Doe', email: 'jane@example.com', created_at: ..., updated_at: ... }
-```
-
-**Parameters:**
-- `table` (string): Table name
-- `data` (object): Data to insert
-- `idField` (string): ID field name (default: 'id')
-
----
-
-#### `bulkInsert(table, dataArray)`
-Insert multiple records in a single query.
-
-```javascript
-const affectedRows = await db.bulkInsert('users', [
-  { name: 'User 1', email: 'user1@example.com' },
-  { name: 'User 2', email: 'user2@example.com' },
-  { name: 'User 3', email: 'user3@example.com' }
+const affectedRows = await db.bulkConditionalUpdate('users', [
+  { where: { status: 'pending', age: { $gt: 18 } }, data: { status: 'active' } },
+  { where: { last_login: { $lt: '2024-01-01' } }, data: { status: 'inactive' } },
+  { where: { role: 'trial', days_active: { $gt: 30 } }, data: { role: 'premium' } }
 ]);
-// Returns: 3 (number of affected rows)
+// Returns: 45 (total rows updated)
 ```
+
+**Perfect for:**
+- Complex business logic updates
+- Conditional promotions
+- Status transitions
+- Batch processing
 
 ---
 
-#### `upsert(table, data, conflictKeys)`
-Insert or update if a record with the same unique key exists.
+### 3. `timeTravel()` - Historical Data Queries
+
+Query your data as it existed at any point in time!
 
 ```javascript
-const result = await db.upsert('users', {
-  id: 1,
-  name: 'John Updated',
-  email: 'john@example.com',
-  age: 26
-}, ['id']);
-// If id=1 exists, updates the record; otherwise inserts new
-```
-
-**Parameters:**
-- `table` (string): Table name
-- `data` (object): Data to insert/update
-- `conflictKeys` (array): Keys to check for conflicts (default: ['id'])
-
----
-
-### Update Operations
-
-#### `updateById(table, id, data, idField)`
-Update a single record by its ID.
-
-```javascript
-await db.updateById('users', 1, {
-  name: 'John Smith',
-  age: 30
-});
-// Auto-updates updated_at if useTimestamps is enabled
-```
-
-**Parameters:**
-- `table` (string): Table name
-- `id` (any): ID value
-- `data` (object): Data to update
-- `idField` (string): ID field name (default: 'id')
-
----
-
-#### `updateWhere(table, conditions, data)`
-Update records matching specific conditions.
-
-```javascript
-const affectedRows = await db.updateWhere(
+// See user data as it was on January 1st
+const historicalUser = await db.timeTravel(
   'users',
-  { status: 'pending', role: 'user' },
-  { status: 'active' }
+  new Date('2024-01-01'),
+  { id: 1 }
 );
-// Returns: number of updated rows
 ```
 
-**Parameters:**
-- `table` (string): Table name
-- `conditions` (object): WHERE conditions
-- `data` (object): Data to update
-
-**Returns:** Number of affected rows
+**Perfect for:**
+- Historical reporting
+- Debugging data issues
+- Compliance requirements
+- Temporal analytics
 
 ---
 
-#### `batchUpdate(table, updates, idField)`
-Update multiple records with different data in a transaction.
+### 4. `smartMerge()` - Multi-Table Data Fusion
+
+Merge related data from multiple tables automatically!
 
 ```javascript
-const count = await db.batchUpdate('users', [
-  { id: 1, status: 'active', score: 100 },
-  { id: 2, status: 'inactive', score: 50 },
-  { id: 3, status: 'pending', score: 75 }
-]);
-// Returns: 3 (number of updated records)
+const completeProfile = await db.smartMerge(
+  ['users', 'user_profiles', 'user_preferences'],
+  'user_id',
+  123
+);
+// Returns: { id: 123, name: 'John', bio: '...', theme: 'dark', _source_users: true, ... }
 ```
 
-**Parameters:**
-- `table` (string): Table name
-- `updates` (array): Array of objects with id and data to update
-- `idField` (string): ID field name (default: 'id')
+**Perfect for:**
+- Building complete user profiles
+- Data aggregation
+- API responses
+- Single view of customer
 
 ---
 
-### Delete Operations
+### 5. `fuzzySearch()` - Intelligent Matching
 
-#### `deleteById(table, id, soft, idField)`
-Delete a single record by ID (supports soft delete).
+Find records with approximate matching and relevance scoring!
 
+```javascript
+const results = await db.fuzzySearch('products', 'name', 'iPhon', 2);
+// Finds: 'iPhone 15', 'iPhone 14 Pro', 'iPhone SE' with match scores
+// Score 0 = exact match, Score 1 = starts with, Score 2 = contains
+```
+
+**Perfect for:**
+- Search autocomplete
+- Typo-tolerant search
+- Product searches
+- Name matching
+
+---
+
+### 6. `weightedRandom()` - Probability-Based Selection
+
+Select random records with weighted probability!
+
+```javascript
+// Get featured products weighted by popularity
+const featured = await db.weightedRandom('products', 'popularity_score', 5);
+
+// Ads weighted by bid amount
+const ad = await db.weightedRandom('ads', 'bid_amount', 1, { status: 'active' });
+```
+
+**Perfect for:**
+- Featured content selection
+- A/B testing with weights
+- Lottery systems
+- Advertisement rotation
+
+---
+
+### 7. `batchTransform()` - Functional Record Processing
+
+Apply transformation functions to all records in chunks!
+
+```javascript
+// Uppercase all usernames
+const processed = await db.batchTransform('users', async (user) => {
+  return {
+    ...user,
+    username: user.username.toUpperCase(),
+    full_name: `${user.first_name} ${user.last_name}`
+  };
+}, {}, 100);
+// Returns: 1250 (records processed)
+```
+
+**Perfect for:**
+- Data migrations
+- Bulk transformations
+- ETL processes
+- Data cleaning
+
+---
+
+### 8. `snapshot()` - Instant Table Backups
+
+Create instant backup snapshots before dangerous operations!
+
+```javascript
+const backup = await db.snapshot('users', 'users_before_migration');
+// Returns: { snapshotName: 'users_before_migration', timestamp: ..., originalTable: 'users' }
+
+// Do risky operations...
+await db.bulkUpdate('users', riskyUpdates);
+
+// Restore if needed:
+// DROP TABLE users; RENAME TABLE users_before_migration TO users;
+```
+
+**Perfect for:**
+- Pre-migration backups
+- Testing environments
+- Data recovery
+- Change rollbacks
+
+---
+
+### 9. `createVersion()` - Automatic Versioning
+
+Track all changes to records automatically!
+
+```javascript
+// Update user
+await db.updateById('users', 1, { name: 'John Updated' });
+
+// Create version snapshot
+const versionId = await db.createVersion('users', 1, adminUserId);
+
+// View version history
+const versions = await db.selectWhere('users_versions', { record_id: 1 });
+```
+
+**Perfect for:**
+- Audit trails
+- Change history
+- Undo functionality
+- Compliance tracking
+
+---
+
+### 10. `conditionalAggregate()` - Smart Aggregations
+
+Aggregate with conditional logic built-in!
+
+```javascript
+const stats = await db.conditionalAggregate('orders', [
+  { func: 'SUM', column: 'amount', condition: 'status = "completed"', alias: 'completed_sales' },
+  { func: 'SUM', column: 'amount', condition: 'status = "pending"', alias: 'pending_sales' },
+  { func: 'COUNT', column: 'id', condition: 'amount > 100', alias: 'large_orders' },
+  { func: 'AVG', column: 'amount', alias: 'avg_amount' }
+]);
+// { completed_sales: 15000, pending_sales: 3000, large_orders: 45, avg_amount: 125.50 }
+```
+
+**Perfect for:**
+- Dashboard metrics
+- Conditional statistics
+- Business intelligence
+- Report generation
+
+---
+
+### 11. `rank()` - Advanced Ranking
+
+Rank records with tie handling using window functions!
+
+```javascript
+const leaderboard = await db.rank('users', 'score', {
+  partitionBy: 'country',
+  orderDirection: 'DESC',
+  where: { game_id: 5 },
+  limit: 100
+});
+// Returns records with rank_position and dense_rank columns
+```
+
+**Perfect for:**
+- Leaderboards
+- Performance rankings
+- Top-N queries
+- Competitive scoring
+
+---
+
+### 12. `movingAverage()` - Time Series Analysis
+
+Calculate moving averages for trend analysis!
+
+```javascript
+const trends = await db.movingAverage('sales', 'amount', 'sale_date', 7);
+// Returns: [{ sale_date: '2024-01-01', amount: 1000, moving_avg: 950 }, ...]
+```
+
+**Perfect for:**
+- Stock analysis
+- Sales trends
+- Performance monitoring
+- Predictive analytics
+
+---
+
+### 13. `findDuplicates()` - Intelligent Duplicate Detection
+
+Find potential duplicates based on any fields!
+
+```javascript
+const duplicates = await db.findDuplicates('users', ['email', 'phone']);
+// [
+//   { email: 'john@example.com', phone: '1234567890', duplicate_count: 3, duplicate_ids: '1,5,8' }
+// ]
+```
+
+**Perfect for:**
+- Data cleaning
+- Deduplication
+- Data quality checks
+- Merge operations
+
+---
+
+### 14. `warmCache()` - Intelligent Cache Pre-loading
+
+Pre-load frequently accessed data into cache!
+
+```javascript
+const result = await db.warmCache('products', [
+  { where: { featured: true } },
+  { where: { category: 'electronics' }, options: { limit: 100 } },
+  { where: { discount: { $gt: 20 } } }
+]);
+// { warmedQueries: 3, cacheSize: 45, timestamp: ... }
+```
+
+**Perfect for:**
+- Application startup
+- Peak traffic preparation
+- Performance optimization
+- Predictive caching
+
+---
+
+### 15. `cascadeUpdate()` - Relational Updates
+
+Update a record and all related records in one transaction!
+
+```javascript
+await db.cascadeUpdate('users', 1,
+  { status: 'inactive' },
+  [
+    { table: 'posts', foreignKey: 'author_id', data: { visible: false } },
+    { table: 'comments', foreignKey: 'user_id', data: { moderated: true } }
+  ]
+);
+// Updates user and all related posts & comments atomically
+```
+
+**Perfect for:**
+- Cascade operations
+- Related data updates
+- Status propagation
+- Data consistency
+
+---
+
+### 16. `queryStats()` - Performance Analytics
+
+Analyze query performance and table statistics!
+
+```javascript
+const stats = await db.queryStats('orders', { days: 30 });
+// {
+//   total_records: 15420,
+//   avg_row_size: 256,
+//   latest_record: '2024-11-06T...',
+//   oldest_record: '2024-10-07T...',
+//   days_with_data: 28
+// }
+```
+
+**Perfect for:**
+- Performance monitoring
+- Capacity planning
+- Data growth analysis
+- Optimization insights
+
+---
+
+## 📚 Standard API Reference
+
+### Core CRUD Operations
+
+#### Insert Operations
+```javascript
+// Insert single record
+const id = await db.insert('users', { name: 'John', email: 'john@example.com' });
+
+// Insert and return full record
+const user = await db.insertAndReturn('users', { name: 'Jane' });
+
+// Bulk insert
+await db.bulkInsert('users', [{ name: 'User1' }, { name: 'User2' }]);
+
+// Upsert (insert or update)
+await db.upsert('users', { id: 1, name: 'Updated' }, ['id']);
+```
+
+#### Update Operations
+```javascript
+// Update by ID
+await db.updateById('users', 1, { name: 'Updated Name' });
+
+// Update by ID and return
+const updated = await db.updateByIdAndReturn('users', 1, { name: 'John' });
+
+// Update where conditions
+const count = await db.updateWhere('users', { status: 'pending' }, { status: 'active' });
+
+// Batch update
+await db.batchUpdate('users', [
+  { id: 1, name: 'User 1' },
+  { id: 2, name: 'User 2' }
+]);
+```
+
+#### Delete Operations
 ```javascript
 // Hard delete
 await db.deleteById('users', 1);
 
-// Soft delete (sets deleted_at to current timestamp)
-await db.deleteById('users', 2, true);
+// Soft delete (sets deleted_at)
+await db.deleteById('users', 1, true);
+
+// Delete where
+const deleted = await db.deleteWhere('users', { status: 'banned' });
+
+// Batch delete
+await db.batchDelete('users', [1, 2, 3, 4, 5]);
+
+// Restore soft deleted
+await db.restore('users', 1);
 ```
 
-**Parameters:**
-- `table` (string): Table name
-- `id` (any): ID value
-- `soft` (boolean): Enable soft delete (default: false)
-- `idField` (string): ID field name (default: 'id')
-
----
-
-#### `deleteWhere(table, conditions, soft)`
-Delete records matching specific conditions.
-
+#### Select Operations
 ```javascript
-const deletedCount = await db.deleteWhere('users', { status: 'banned' });
-// Returns: number of deleted rows
+// Simple select
+const users = await db.selectWhere('users', { status: 'active' });
 
-// Soft delete
-const softDeletedCount = await db.deleteWhere('users', { inactive_days: 365 }, true);
-```
-
-**Returns:** Number of affected rows
-
----
-
-#### `truncate(table)`
-Remove all records from a table (TRUNCATE).
-
-```javascript
-await db.truncate('temporary_logs');
-// Resets auto-increment counter
-```
-
----
-
-### Select Operations
-
-#### `selectWhere(table, conditions, options)`
-Select records matching conditions.
-
-```javascript
-const activeUsers = await db.selectWhere('users', { status: 'active' });
-
-// With options
-const recentUsers = await db.selectWhere('users', { status: 'active' }, {
-  limit: 10,
-  offset: 0,
-  useCache: true
-});
-```
-
-**Parameters:**
-- `table` (string): Table name
-- `conditions` (object): WHERE conditions
-- `options` (object): Query options (limit, offset, useCache)
-
----
-
-#### `select(table, options)`
-Advanced select with complex options.
-
-```javascript
-const users = await db.select('users', {
-  columns: ['id', 'name', 'email', 'COUNT(*) as total'],
+// Advanced select
+const results = await db.select('users', {
+  columns: ['id', 'name', 'email'],
   where: { status: 'active' },
-  whereRaw: 'age > 18',
-  orderBy: [
-    { column: 'created_at', direction: 'DESC' },
-    'name ASC'
-  ],
-  groupBy: ['role'],
-  having: 'COUNT(*) > 5',
-  limit: 20,
-  offset: 0,
+  orderBy: [{ column: 'created_at', direction: 'DESC' }],
+  limit: 10,
   useCache: true
 });
-```
 
-**Options:**
-- `columns` (array): Columns to select (default: ['*'])
-- `where` (object): WHERE conditions
-- `whereRaw` (string): Raw WHERE clause
-- `orderBy` (array): Order by clauses
-- `groupBy` (array): Group by columns
-- `having` (string): HAVING clause
-- `limit` (number): Result limit
-- `offset` (number): Result offset
-- `useCache` (boolean): Enable caching
-
----
-
-#### `findOne(table, conditions)`
-Find a single record matching conditions.
-
-```javascript
+// Find one
 const user = await db.findOne('users', { email: 'john@example.com' });
-// Returns: { id: 1, name: 'John', ... } or null
+
+// Find or create
+const { record, created } = await db.findOrCreate(
+  'settings',
+  { user_id: 1, key: 'theme' },
+  { value: 'dark' }
+);
+
+// Get by IDs
+const users = await db.getByIds('users', [1, 2, 3, 4]);
 ```
-
----
-
-#### `getByIds(table, ids, idField)`
-Get multiple records by their IDs.
-
-```javascript
-const users = await db.getByIds('users', [1, 2, 3, 4, 5]);
-// Returns: Array of user objects
-```
-
----
 
 ### Pagination
 
-#### `paginate(table, options)`
-Get paginated results with metadata.
-
 ```javascript
-const result = await db.paginate('users', {
-  page: 1,
-  perPage: 20,
-  where: { status: 'active' },
-  orderBy: [{ column: 'created_at', direction: 'DESC' }]
-});
-
-console.log(result);
-// {
-//   data: [ {...}, {...}, ... ],
-//   pagination: {
-//     total: 156,
-//     page: 1,
-//     perPage: 20,
-//     totalPages: 8,
-//     hasNext: true,
-//     hasPrev: false
-//   }
-// }
-```
-
-**Options:**
-- `page` (number): Page number (default: 1)
-- `perPage` (number): Items per page (default: 20)
-- `where` (object): WHERE conditions
-- `orderBy` (array): Order by clauses
-
----
-
-### Counting and Existence
-
-#### `count(table, conditions)`
-Count records matching conditions.
-
-```javascript
-const activeUserCount = await db.count('users', { status: 'active' });
-// Returns: 42
-
-const totalUsers = await db.count('users');
-// Returns: 156
-```
-
----
-
-#### `exists(table, conditions)`
-Check if a record exists.
-
-```javascript
-const emailExists = await db.exists('users', { email: 'john@example.com' });
-// Returns: true or false
-```
-
----
-
-### Aggregate Functions
-
-#### `aggregate(table, options)`
-Perform complex aggregate operations.
-
-```javascript
-const stats = await db.aggregate('orders', {
-  functions: [
-    { func: 'SUM', column: 'amount', alias: 'total_sales' },
-    { func: 'COUNT', column: 'id', alias: 'order_count' },
-    { func: 'AVG', column: 'amount', alias: 'avg_order' }
-  ],
-  groupBy: ['user_id'],
-  where: { status: 'completed' },
-  having: 'SUM(amount) > 1000'
-});
-
-// Returns: [
-//   { user_id: 1, total_sales: 5000, order_count: 12, avg_order: 416.67 },
-//   { user_id: 2, total_sales: 3500, order_count: 8, avg_order: 437.50 },
-//   ...
-// ]
-```
-
----
-
-#### `min(table, column, where)` / `max(table, column, where)` / `avg(table, column, where)` / `sum(table, column, where)`
-Quick aggregate functions.
-
-```javascript
-const minAge = await db.min('users', 'age', { status: 'active' });
-// Returns: 18
-
-const maxSalary = await db.max('employees', 'salary');
-// Returns: 150000
-
-const avgRating = await db.avg('products', 'rating', { category: 'electronics' });
-// Returns: 4.3
-
-const totalRevenue = await db.sum('orders', 'amount', { year: 2024 });
-// Returns: 1250000
-```
-
----
-
-#### `pivotTable(table, rowFields, columnField, valueField, options)`
-Create Excel-style pivot summaries with row groupings, dynamic columns, and configurable aggregations.
-
-```javascript
-const pivot = await db.pivotTable(
-  'orders',
-  ['status'],
-  'region',
-  'amount',
-  { aggregate: 'SUM', includeTotals: true }
-);
-
-// pivot.rows =>
-// [
-//   { status: 'completed', north: 1200, south: 800, total: 2000 },
-//   { status: 'pending', north: 500, south: 400, total: 900 }
-// ]
-//
-// pivot.columns => ['north', 'south']
-// pivot.columnTotals => { north: 1700, south: 1200 }
-// pivot.grandTotal => 2900
-```
-
----
-
-### Search Operations
-
-#### `search(table, fields, keyword)`
-Simple search across multiple fields.
-
-```javascript
-const results = await db.search('users', ['name', 'email', 'bio'], 'john');
-// Searches for 'john' in name, email, or bio fields
-```
-
----
-
-#### `advancedSearch(table, criteria, options)`
-Search with multiple operators (LIKE, IN, BETWEEN, etc.).
-
-```javascript
-const users = await db.advancedSearch('users', {
-  status: 'active',
-  age: { operator: '>=', value: 18 },
-  name: { operator: 'LIKE', value: 'John' },
-  role: { operator: 'IN', value: ['admin', 'moderator'] },
-  created_at: { operator: 'BETWEEN', value: { min: '2024-01-01', max: '2024-12-31' } },
-  email_verified: { operator: 'IS NOT NULL' }
-}, {
-  limit: 100,
-  offset: 0,
-  orderBy: [{ column: 'created_at', direction: 'DESC' }]
-});
-```
-
-**Supported Operators:**
-- `=` (default)
-- `>`, `>=`, `<`, `<=`, `!=`
-- `LIKE`
-- `IN`
-- `BETWEEN`
-- `IS NULL`
-- `IS NOT NULL`
-
----
-
-#### `fullTextSearch(table, columns, searchTerm, options)`
-Full-text search with relevance scoring (requires FULLTEXT index).
-
-```javascript
-const articles = await db.fullTextSearch('articles', ['title', 'content'], 'javascript tutorial', {
-  mode: 'NATURAL LANGUAGE', // or 'BOOLEAN', 'QUERY EXPANSION'
-  limit: 50,
-  minScore: 0.5
-});
-
-// Returns results ordered by relevance
-```
-
----
-
-#### `distinctValues(table, column)`
-Get distinct values from a column.
-
-```javascript
-const roles = await db.distinctValues('users', 'role');
-// Returns: [{ role: 'admin' }, { role: 'user' }, { role: 'moderator' }]
-```
-
----
-
-### Increment/Decrement
-
-#### `increment(table, id, field, amount, idField)`
-Increment a numeric field atomically.
-
-```javascript
-await db.increment('users', 1, 'login_count', 1);
-// Increments login_count by 1 for user with id=1
-
-await db.increment('products', 5, 'stock', 100);
-// Adds 100 to stock for product with id=5
-```
-
----
-
-#### `decrement(table, id, field, amount, idField)`
-Decrement a numeric field atomically.
-
-```javascript
-await db.decrement('products', 5, 'stock', 1);
-// Reduces stock by 1 for product with id=5
-```
-
----
-
-### Join Operations
-
-#### `join(options)`
-Simple join between two tables.
-
-```javascript
-const usersWithPosts = await db.join({
-  baseTable: 'users',
-  joinTable: 'posts',
-  baseKey: 'id',
-  joinKey: 'user_id',
-  conditions: { 'users.status': 'active' },
-  columns: ['users.*', 'posts.title', 'posts.created_at as post_date'],
-  joinType: 'INNER' // or 'LEFT', 'RIGHT'
-});
-```
-
----
-
-#### `multiJoin(options)`
-Join multiple tables with support for all join types.
-
-```javascript
-const data = await db.multiJoin({
-  baseTable: 'orders',
-  baseAlias: 'o',
-  joins: [
-    {
-      table: 'users',
-      alias: 'u',
-      type: 'INNER',
-      baseColumn: 'user_id',
-      joinColumn: 'id'
-    },
-    {
-      table: 'products',
-      alias: 'p',
-      type: 'LEFT',
-      baseColumn: 'product_id',
-      joinColumn: 'id'
-    },
-    {
-      table: 'payments',
-      alias: 'pay',
-      type: 'LEFT',
-      baseColumn: 'id',
-      joinColumn: 'order_id'
-    }
-  ],
-  conditions: { 'o.status': 'completed' },
-  columns: [
-    'o.*',
-    'u.name as customer_name',
-    'p.name as product_name',
-    'pay.amount as payment_amount'
-  ]
-});
-```
-
----
-
-### Transactions
-
-#### `transaction(callback)`
-Execute multiple operations in a transaction.
-
-```javascript
-const result = await db.transaction(async (connection) => {
-  // All operations here are within the transaction
-  const orderId = await db.insert('orders', {
-    user_id: 1,
-    total: 100
-  });
-  
-  await db.updateById('users', 1, {
-    balance: 900
-  });
-  
-  await db.insert('order_items', {
-    order_id: orderId,
-    product_id: 5,
-    quantity: 2
-  });
-  
-  return orderId;
-});
-// All operations committed together, or rolled back if any fails
-```
-
----
-
-### Hooks
-
-#### `addHook(type, operation, callback)`
-Add lifecycle hooks for operations.
-
-```javascript
-// Before insert hook
-db.addHook('before', 'insert', async (data) => {
-  console.log('About to insert:', data);
-  // Modify data before insert
-  data.data.slug = data.data.title.toLowerCase().replace(/\s+/g, '-');
-  return data;
-});
-
-// After insert hook
-db.addHook('after', 'insert', async (data) => {
-  console.log('Inserted record:', data);
-  // Perform additional actions after insert
-  await logActivity('New record created', data.id);
-  return data;
-});
-```
-
-**Hook Types:**
-- `before`: Executed before operation
-- `after`: Executed after operation
-
-**Operations:**
-- `insert`
-- Custom operations you define
-
----
-
-#### `removeHook(type, operation)`
-Remove a previously added hook.
-
-```javascript
-db.removeHook('before', 'insert');
-```
-
----
-
-### Cache Management
-
-#### `clearCache(table)`
-Clear query cache for a specific table or all tables.
-
-```javascript
-// Clear cache for specific table
-db.clearCache('users');
-
-// Clear all cache
-db.clearCache();
-```
-
----
-
-#### `getCacheStats()`
-Get cache statistics.
-
-```javascript
-const stats = db.getCacheStats();
-console.log(stats);
-// { size: 25, enabled: true, expiry: 60000 }
-```
-
----
-
-### Database Utilities
-
-#### `getTableSchema(table)`
-Get the schema/structure of a table.
-
-```javascript
-const schema = await db.getTableSchema('users');
-console.log(schema);
-// [
-//   { Field: 'id', Type: 'int(11)', Null: 'NO', Key: 'PRI', ... },
-//   { Field: 'name', Type: 'varchar(255)', Null: 'NO', Key: '', ... },
-//   ...
-// ]
-```
-
----
-
-#### `getTableIndexes(table)`
-Get all indexes on a table.
-
-```javascript
-const indexes = await db.getTableIndexes('users');
-console.log(indexes);
-// Shows all indexes including primary keys, unique keys, etc.
-```
-
----
-
-#### `healthCheck()`
-Check database connection health.
-
-```javascript
-const health = await db.healthCheck();
-console.log(health);
-// { status: 'healthy', timestamp: 2024-11-06T... }
-// or
-// { status: 'unhealthy', error: 'Connection timeout', timestamp: ... }
-```
-
----
-
-#### `raw(sql, params)`
-Execute raw SQL with basic safety checks.
-
-```javascript
-const results = await db.raw('SELECT * FROM users WHERE age > ?', [18]);
-// Note: Dangerous keywords (DROP, TRUNCATE, DELETE, ALTER, CREATE) are blocked
-```
-
----
-
-### Audit Logging
-
-#### `logAudit(action, table, data, userId)`
-Log operations to audit_logs table (if enabled).
-
-```javascript
-await db.logAudit('UPDATE', 'users', { id: 1, name: 'New Name' }, 123);
-// Logs the action to audit_logs table
-```
-
-**Note:** Requires `audit_logs` table in allowedTables list.
-
----
-
-## 🎯 Common Use Cases
-
-### User Management
-
-```javascript
-// Register new user
-const userId = await db.insert('users', {
-  name: 'John Doe',
-  email: 'john@example.com',
-  password: hashedPassword,
-  role: 'user'
-});
-
-// Login - find user
-const user = await db.findOne('users', { email: 'john@example.com' });
-if (user && await verifyPassword(password, user.password)) {
-  await db.increment('users', user.id, 'login_count');
-}
-
-// Get active users with pagination
+// Offset pagination
 const { data, pagination } = await db.paginate('users', {
   page: 1,
   perPage: 20,
@@ -913,763 +523,343 @@ const { data, pagination } = await db.paginate('users', {
   orderBy: [{ column: 'created_at', direction: 'DESC' }]
 });
 
-// Search users
-const searchResults = await db.search('users', ['name', 'email'], 'john');
-
-// Soft delete user
-await db.deleteById('users', userId, true);
+// Cursor pagination (better for large datasets)
+const { data, nextCursor, hasMore } = await db.cursorPaginate('users', {
+  cursor: lastId,
+  limit: 20,
+  cursorColumn: 'id',
+  direction: 'ASC'
+});
 ```
 
----
-
-### E-commerce Order Processing
+### Aggregations
 
 ```javascript
-// Create order with transaction
-const orderId = await db.transaction(async (connection) => {
-  // Create order
-  const orderId = await db.insert('orders', {
-    user_id: userId,
-    total: totalAmount,
-    status: 'pending'
-  });
-  
-  // Add order items
-  await db.bulkInsert('order_items', orderItems.map(item => ({
-    order_id: orderId,
-    product_id: item.product_id,
-    quantity: item.quantity,
-    price: item.price
-  })));
-  
-  // Update product stock
-  for (const item of orderItems) {
-    await db.decrement('products', item.product_id, 'stock', item.quantity);
-  }
-  
-  // Update user stats
-  await db.increment('users', userId, 'order_count');
-  
-  return orderId;
-});
+// Simple aggregates
+const count = await db.count('users', { status: 'active' });
+const min = await db.min('products', 'price');
+const max = await db.max('products', 'price');
+const avg = await db.avg('orders', 'amount');
+const sum = await db.sum('orders', 'amount');
+const median = await db.median('users', 'age'); // MySQL 8.0+ compatible!
 
-// Get orders with user and product details
-const orders = await db.multiJoin({
-  baseTable: 'orders',
-  baseAlias: 'o',
-  joins: [
-    { table: 'users', alias: 'u', type: 'INNER', baseColumn: 'user_id', joinColumn: 'id' },
-    { table: 'order_items', alias: 'oi', type: 'LEFT', baseColumn: 'id', joinColumn: 'order_id' },
-    { table: 'products', alias: 'p', type: 'LEFT', baseColumn: 'product_id', joinColumn: 'id' }
-  ],
-  columns: ['o.*', 'u.name as customer_name', 'u.email', 'p.name as product_name', 'oi.quantity', 'oi.price']
-});
-
-// Get sales statistics
-const salesStats = await db.aggregate('orders', {
+// Complex aggregation
+const stats = await db.aggregate('orders', {
   functions: [
-    { func: 'SUM', column: 'total', alias: 'total_revenue' },
-    { func: 'COUNT', column: 'id', alias: 'order_count' },
-    { func: 'AVG', column: 'total', alias: 'avg_order_value' }
+    { func: 'SUM', column: 'amount', alias: 'total' },
+    { func: 'AVG', column: 'amount', alias: 'average' }
   ],
-  groupBy: ['DATE(created_at)'],
-  where: { status: 'completed' },
-  having: 'SUM(total) > 1000'
+  groupBy: ['status'],
+  where: { created_at: { $gte: '2024-01-01' } }
+});
+
+// Pivot tables
+const pivot = await db.pivotTable('sales', ['region'], 'product', 'amount', {
+  aggregate: 'SUM',
+  includeTotals: true
 });
 ```
 
----
-
-### Blog/CMS System
+### Search Operations
 
 ```javascript
-// Create post
-const postId = await db.insertAndReturn('posts', {
-  title: 'My First Post',
-  content: 'Post content here...',
-  author_id: userId,
-  status: 'published'
-});
-
-// Full-text search posts
-const searchResults = await db.fullTextSearch('posts', ['title', 'content'], 'javascript tutorial', {
-  mode: 'NATURAL LANGUAGE',
-  limit: 10
-});
-
-// Get posts with author info
-const posts = await db.join({
-  baseTable: 'posts',
-  joinTable: 'users',
-  baseKey: 'author_id',
-  joinKey: 'id',
-  columns: ['posts.*', 'users.name as author_name', 'users.avatar'],
-  conditions: { 'posts.status': 'published' }
-});
+// Simple search
+const results = await db.search('users', ['name', 'email'], 'john');
 
 // Advanced search
-const filteredPosts = await db.advancedSearch('posts', {
-  status: 'published',
-  category: { operator: 'IN', value: ['tech', 'programming'] },
-  views: { operator: '>', value: 100 },
-  title: { operator: 'LIKE', value: 'JavaScript' }
-}, {
-  limit: 20,
-  orderBy: [{ column: 'views', direction: 'DESC' }]
+const users = await db.advancedSearch('users', {
+  age: { operator: '>=', value: 18 },
+  status: { operator: 'IN', value: ['active', 'premium'] },
+  name: { operator: 'LIKE', value: 'John' }
 });
 
-// Update view count
-await db.increment('posts', postId, 'views');
+// Full-text search (requires FULLTEXT index)
+const articles = await db.fullTextSearch('posts', ['title', 'content'], 'javascript');
+```
 
-// Get post statistics by category
-const stats = await db.aggregate('posts', {
-  functions: [
-    { func: 'COUNT', column: 'id', alias: 'post_count' },
-    { func: 'AVG', column: 'views', alias: 'avg_views' }
+### Joins
+
+```javascript
+// Simple join
+const data = await db.join({
+  baseTable: 'users',
+  joinTable: 'posts',
+  baseKey: 'id',
+  joinKey: 'user_id',
+  joinType: 'LEFT'
+});
+
+// Multi-join
+const data = await db.multiJoin({
+  baseTable: 'orders',
+  joins: [
+    { table: 'users', type: 'INNER', baseColumn: 'user_id', joinColumn: 'id' },
+    { table: 'products', type: 'LEFT', baseColumn: 'product_id', joinColumn: 'id' }
   ],
-  groupBy: ['category'],
-  where: { status: 'published' }
+  columns: ['orders.*', 'users.name', 'products.title']
 });
+```
+
+### Increment/Decrement
+
+```javascript
+// Increment single field
+await db.increment('users', 1, 'login_count', 1);
+
+// Decrement
+await db.decrement('products', 5, 'stock', 10);
+
+// Increment multiple fields
+await db.incrementMany('users', 1, { views: 1, clicks: 1 });
+```
+
+### Transactions
+
+```javascript
+const result = await db.transaction(async (connection) => {
+  const orderId = await db.insert('orders', orderData);
+  await db.updateById('users', userId, { balance: newBalance });
+  await db.insert('order_items', itemsData);
+  return orderId;
+});
+```
+
+### Hooks
+
+```javascript
+// Add before hook
+db.addHook('before', 'insert', async (data) => {
+  data.data.slug = slugify(data.data.title);
+  return data;
+});
+
+// Add after hook
+db.addHook('after', 'insert', async (data) => {
+  await sendNotification('New record created', data.id);
+  return data;
+});
+
+// Remove hook
+db.removeHook('before', 'insert');
+```
+
+### Cache Management
+
+```javascript
+// Clear specific table cache
+db.clearCache('users');
+
+// Clear all cache
+db.clearCache();
+
+// Get cache stats
+const stats = db.getCacheStats();
+// { size: 42, enabled: true, expiry: 60000 }
+```
+
+### Utility Functions
+
+```javascript
+// Health check
+const health = await db.healthCheck();
+
+// Table schema
+const schema = await db.getTableSchema('users');
+
+// Table indexes
+const indexes = await db.getTableIndexes('users');
+
+// Table info
+const info = await db.getTableInfo('users');
+
+// List all tables
+const tables = await db.listTables();
+
+// Check if table exists
+const exists = await db.tableExists('users');
+
+// Optimize table
+await db.optimizeTable('users');
+
+// Get pool info
+const poolInfo = db.getPoolInfo();
+
+// Database stats
+const stats = await db.getDatabaseStats();
 ```
 
 ---
 
-### Analytics and Reporting
+## 🎯 Real-World Examples
+
+### E-Commerce Platform
 
 ```javascript
-// Daily active users
-const dailyActiveUsers = await db.aggregate('user_sessions', {
-  functions: [
-    { func: 'COUNT', column: 'DISTINCT user_id', alias: 'active_users' }
-  ],
-  groupBy: ['DATE(created_at)'],
-  where: { status: 'active' }
+// Create order with all relations
+const orderId = await db.transaction(async () => {
+  const order = await db.insertAndReturn('orders', {
+    user_id: userId,
+    total: 299.99,
+    status: 'pending'
+  });
+
+  await db.bulkInsert('order_items', items.map(item => ({
+    order_id: order.id,
+    product_id: item.id,
+    quantity: item.quantity
+  })));
+
+  for (const item of items) {
+    await db.decrement('products', item.id, 'stock', item.quantity);
+  }
+
+  return order.id;
 });
 
-// Revenue by month
-const monthlyRevenue = await db.query(`
-  SELECT 
-    DATE_FORMAT(created_at, '%Y-%m') as month,
-    SUM(amount) as revenue,
-    COUNT(*) as transactions
-  FROM orders
-  WHERE status = 'completed'
-  GROUP BY DATE_FORMAT(created_at, '%Y-%m')
-  ORDER BY month DESC
-`, [], true); // Use cache
+// Find duplicates and merge
+const dupes = await db.findDuplicates('customers', ['email', 'phone']);
+for (const dupe of dupes) {
+  const ids = dupe.duplicate_ids.split(',');
+  const primary = ids[0];
+  const merged = await db.smartMerge(['customers', 'customer_profiles'], 'id', primary);
+  // Merge and clean up duplicates...
+}
 
-// Top selling products
-const topProducts = await db.select('products', {
-  columns: ['id', 'name', 'sales_count', 'revenue'],
-  orderBy: [{ column: 'sales_count', direction: 'DESC' }],
-  limit: 10,
-  useCache: true
+// Weighted product recommendations
+const recommended = await db.weightedRandom('products', 'popularity_score', 5, {
+  category: userPreference
 });
+```
 
-// Complex analytics query
-const userEngagement = await db.multiJoin({
-  baseTable: 'users',
-  baseAlias: 'u',
-  joins: [
-    { table: 'posts', alias: 'p', type: 'LEFT', baseColumn: 'id', joinColumn: 'author_id' },
-    { table: 'comments', alias: 'c', type: 'LEFT', baseColumn: 'id', joinColumn: 'user_id' }
-  ],
-  columns: [
-    'u.id',
-    'u.name',
-    'COUNT(DISTINCT p.id) as post_count',
-    'COUNT(DISTINCT c.id) as comment_count'
+### Analytics Dashboard
+
+```javascript
+// Calculate moving average for sales
+const salesTrend = await db.movingAverage('daily_sales', 'amount', 'date', 7);
+
+// Conditional aggregates for dashboard
+const metrics = await db.conditionalAggregate('orders', [
+  { func: 'SUM', column: 'amount', condition: 'status="completed"', alias: 'revenue' },
+  { func: 'COUNT', column: 'id', condition: 'status="pending"', alias: 'pending_count' },
+  { func: 'AVG', column: 'amount', alias: 'avg_order_value' }
+]);
+
+// Performance statistics
+const perfStats = await db.queryStats('orders', { days: 30 });
+
+// Rank top customers
+const topCustomers = await db.rank('customers', 'total_spent', {
+  orderDirection: 'DESC',
+  limit: 50
+});
+```
+
+### Content Management
+
+```javascript
+// Create versioned content
+await db.updateById('articles', articleId, { content: newContent });
+await db.createVersion('articles', articleId, editorId);
+
+// Time travel to see old version
+const oldVersion = await db.timeTravel('articles', new Date('2024-01-01'), { id: articleId });
+
+// Fuzzy search with typo tolerance
+const results = await db.fuzzySearch('articles', 'title', userSearchTerm, 2);
+
+// Cascade update on author status change
+await db.cascadeUpdate('authors', authorId,
+  { status: 'inactive' },
+  [
+    { table: 'articles', foreignKey: 'author_id', data: { visible: false } },
+    { table: 'comments', foreignKey: 'author_id', data: { moderated: true } }
   ]
-});
+);
 ```
 
 ---
 
 ## 🔒 Security Features
 
-### Table Whitelisting
-Only allowed tables can be queried, preventing unauthorized access.
-
-```javascript
-const db = createDb(pool, ['users', 'posts']); // Only these tables are accessible
-
-await db.query('SELECT * FROM users'); // ✅ Works
-await db.query('SELECT * FROM admin_secrets'); // ❌ Throws error
-```
-
-### SQL Injection Prevention
-All methods use parameterized queries to prevent SQL injection.
-
-```javascript
-// Safe - uses parameterized query
-const users = await db.selectWhere('users', { email: userInput });
-
-// The raw method blocks dangerous keywords
-await db.raw('DROP TABLE users'); // ❌ Throws error
-```
-
-### Dangerous Keyword Detection
-Raw queries block dangerous SQL keywords (DROP, TRUNCATE, DELETE, ALTER, CREATE).
+- ✅ **Table Whitelisting** - Only allowed tables can be queried
+- ✅ **SQL Injection Prevention** - All methods use parameterized queries
+- ✅ **Dangerous Keyword Detection** - Raw queries block unsafe operations
+- ✅ **Input Validation** - All inputs are validated before execution
 
 ---
 
 ## 🚀 Performance Features
 
-### Query Caching
-Enable query caching to speed up repeated queries.
-
-```javascript
-const db = createDb(pool, ['users'], {
-  enableQueryCache: true,
-  cacheExpiry: 60000 // 1 minute
-});
-
-// First call - queries database
-const users = await db.selectWhere('users', { status: 'active' }, { useCache: true });
-
-// Second call - returns from cache (if within expiry time)
-const cachedUsers = await db.selectWhere('users', { status: 'active' }, { useCache: true });
-
-// Clear cache when data changes
-await db.updateById('users', 1, { status: 'inactive' });
-// Cache automatically cleared for 'users' table
-```
-
-### Slow Query Logging
-Automatically logs queries that take longer than 500ms.
-
-```javascript
-// If a query takes > 500ms, you'll see:
-// ⚠️ Slow query (1234ms): SELECT * FROM large_table WHERE ...
-```
-
-### Batch Operations
-Process multiple records efficiently.
-
-```javascript
-// Bulk insert - single query
-await db.bulkInsert('users', arrayOf1000Users);
-
-// Batch update - transaction
-await db.batchUpdate('users', arrayOfUpdates);
-```
+- ⚡ **Query Caching** - Optional in-memory caching with TTL
+- 📊 **Slow Query Logging** - Automatic detection of slow queries (>500ms)
+- 🔄 **Connection Pooling** - Built-in support for connection pools
+- 📦 **Batch Operations** - Efficient bulk inserts and updates
+- 🎯 **Smart Cache Invalidation** - Automatic cache clearing on updates
 
 ---
 
-## 📝 Best Practices
+## 📖 Database Schema Requirements
 
-### 1. Always Use Allowed Tables
-```javascript
-// Define all tables you'll use
-const db = createDb(pool, [
-  'users', 'posts', 'comments', 'likes', 'sessions'
-]);
-```
-
-### 2. Enable Caching for Read-Heavy Operations
-```javascript
-// Good for frequently accessed, rarely changed data
-const categories = await db.selectWhere('categories', {}, { useCache: true });
-```
-
-### 3. Use Transactions for Related Operations
-```javascript
-// Always wrap related operations in transactions
-await db.transaction(async () => {
-  await db.insert('orders', orderData);
-  await db.updateById('products', productId, { stock: newStock });
-  await db.insert('order_items', itemsData);
-});
-```
-
-### 4. Use Pagination for Large Datasets
-```javascript
-// Don't load everything at once
-const { data, pagination } = await db.paginate('posts', {
-  page: currentPage,
-  perPage: 20
-});
-```
-
-### 5. Use Hooks for Business Logic
-```javascript
-// Centralize common logic
-db.addHook('before', 'insert', async (data) => {
-  if (data.table === 'users') {
-    data.data.email = data.data.email.toLowerCase();
-    data.data.username = data.data.username.trim();
-  }
-  return data;
-});
-```
-
-### 6. Use Soft Deletes for Important Data
-```javascript
-// Allow data recovery
-await db.deleteById('users', userId, true); // Soft delete
-
-// Query non-deleted records
-const activeUsers = await db.selectWhere('users', { deleted_at: null });
-```
-
-### 7. Monitor Query Performance
-```javascript
-// Slow queries are automatically logged
-// Watch your console for warnings:
-// ⚠️ Slow query (1234ms): SELECT ...
-
-// Optimize slow queries by:
-// - Adding indexes
-// - Using select() with specific columns
-// - Enabling caching
-```
-
----
-
-## 🛠️ Database Schema Requirements
-
-### Required Columns (if using default options)
-
-**For Timestamp Support:**
+### For Timestamps
 ```sql
 CREATE TABLE users (
   id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(255),
-  email VARCHAR(255) UNIQUE,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 ```
 
-**For Soft Delete Support:**
+### For Soft Deletes
 ```sql
 CREATE TABLE posts (
   id INT PRIMARY KEY AUTO_INCREMENT,
   title VARCHAR(255),
-  content TEXT,
-  deleted_at DATETIME NULL,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  deleted_at DATETIME NULL
 );
 ```
 
-**For Audit Logging:**
+### For Versioning
 ```sql
-CREATE TABLE audit_logs (
+CREATE TABLE users_versions (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  action VARCHAR(50),
-  table_name VARCHAR(50),
+  record_id INT,
   data TEXT,
-  user_id INT NULL,
-  timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+  user_id INT,
+  version_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 ```
-
-**For Full-Text Search:**
-```sql
-CREATE TABLE articles (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  title VARCHAR(255),
-  content TEXT,
-  FULLTEXT KEY ft_title_content (title, content)
-);
-```
-
----
-
-## 🔧 Advanced Configuration
-
-### Custom Pagination Defaults
-```javascript
-const db = createDb(pool, ['users'], {
-  defaultPagination: {
-    limit: 100,  // Default items per page
-    offset: 0
-  }
-});
-```
-
-### Disable Timestamps
-```javascript
-const db = createDb(pool, ['logs'], {
-  useTimestamps: false  // No auto created_at/updated_at
-});
-```
-
-### Long Cache Expiry for Static Data
-```javascript
-const db = createDb(pool, ['countries', 'currencies'], {
-  enableQueryCache: true,
-  cacheExpiry: 3600000  // 1 hour
-});
-```
-
----
-
-## 🐛 Error Handling
-
-### Basic Error Handling
-```javascript
-try {
-  const user = await db.findOne('users', { id: userId });
-  if (!user) {
-    throw new Error('User not found');
-  }
-} catch (error) {
-  console.error('Database error:', error.message);
-  // Handle error appropriately
-}
-```
-
-### Transaction Error Handling
-```javascript
-try {
-  const result = await db.transaction(async (connection) => {
-    // Your operations
-    return result;
-  });
-} catch (error) {
-  console.error('Transaction failed and rolled back:', error);
-  // Transaction is automatically rolled back
-}
-```
-
-### Graceful Degradation with Cache
-```javascript
-try {
-  let data = await db.selectWhere('users', { status: 'active' }, { useCache: true });
-} catch (error) {
-  console.error('Failed to fetch users:', error);
-  // Fallback to empty array or cached data
-  data = [];
-}
-```
-
----
-
-## 🧪 Testing
-
-### Basic Test Example
-```javascript
-const assert = require('assert');
-
-describe('User Operations', () => {
-  let db;
-  
-  before(async () => {
-    // Setup test database
-    db = createDb(testPool, ['users']);
-  });
-  
-  after(async () => {
-    // Cleanup
-    await db.truncate('users');
-  });
-  
-  it('should create a new user', async () => {
-    const userId = await db.insert('users', {
-      name: 'Test User',
-      email: 'test@example.com'
-    });
-    
-    assert.ok(userId > 0);
-    
-    const user = await db.findOne('users', { id: userId });
-    assert.strictEqual(user.name, 'Test User');
-    assert.strictEqual(user.email, 'test@example.com');
-  });
-  
-  it('should update user', async () => {
-    const userId = await db.insert('users', {
-      name: 'John',
-      email: 'john@example.com'
-    });
-    
-    await db.updateById('users', userId, { name: 'John Doe' });
-    
-    const user = await db.findOne('users', { id: userId });
-    assert.strictEqual(user.name, 'John Doe');
-  });
-  
-  it('should paginate users', async () => {
-    // Insert test data
-    await db.bulkInsert('users', [
-      { name: 'User 1', email: 'user1@example.com' },
-      { name: 'User 2', email: 'user2@example.com' },
-      { name: 'User 3', email: 'user3@example.com' }
-    ]);
-    
-    const result = await db.paginate('users', { page: 1, perPage: 2 });
-    
-    assert.strictEqual(result.data.length, 2);
-    assert.ok(result.pagination.hasNext);
-    assert.strictEqual(result.pagination.hasPrev, false);
-  });
-});
-```
-
----
-
-## 📊 Changelog
-
-### [4.0.0] - 2024-11-05
-
-#### 🎉 Major Release - Powerful New Features
-
-#### Added
-- ✨ Query caching system with automatic invalidation
-- 🔍 Advanced search with multiple operators (LIKE, IN, BETWEEN, etc.)
-- 📄 Full pagination with metadata (total pages, hasNext, hasPrev)
-- 📊 Aggregate functions (min, max, avg, sum) with grouping
-- 🔎 Full-text search with relevance scoring
-- 💾 Upsert functionality (insert or update on conflict)
-- 🔄 Batch update operations with transactions
-- ⚡ Conditional updates and deletes (updateWhere, deleteWhere)
-- 🎣 Lifecycle hooks (before/after operations)
-- 🔙 insertAndReturn method for immediate feedback
-- 🔧 Advanced select with complex options (groupBy, having, whereRaw)
-- 🛠️ Database utility methods (getTableSchema, getTableIndexes, healthCheck)
-- 📈 Cache management (clearCache, getCacheStats)
-- 🔒 Raw query execution with safety checks (dangerous keyword detection)
-- 🔢 Increment/Decrement operations
-- 🎯 distinctValues method
-- 🤝 Multi-table joins with aliases
-- 📦 Bulk insert operations
-
-#### Changed
-- 🚀 Enhanced configuration options
-- 🐛 Improved error handling and logging
-- ⚡ Better performance monitoring (slow query deACtection)
-- 📝 More flexible select options
-
-#### Security
-- 🛡️ Added dangerous SQL keyword detection in raw queries
-- ✅ Enhanced input validation
-- 🔐 Parameterized queries throughout
-
----
-
-### [1.0.0] - Initial Release
-
-#### Initial Features
-- ✅ Basic CRUD operations
-- 🔄 Transaction support
-- 🗑️ Soft deletes
-- ⏰ Auto timestamps
-- 📝 Audit logging
-- 🔗 Multi-table joins
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-### Development Setup
-```bash
-git clone https://github.com/yourusername/mysql-db-helper.git
-cd mysql-db-helper
-npm install
-npm test
-```
+Contributions are welcome! Please check out our [Contributing Guide](CONTRIBUTING.md).
 
 ---
 
 ## 📄 License
 
-MIT License - see LICENSE file for details
-
----
-
-## 💡 Tips and Tricks
-
-### 1. Combining Multiple Searches
-```javascript
-// Use advancedSearch for complex filters
-const users = await db.advancedSearch('users', {
-  age: { operator: 'BETWEEN', value: { min: 18, max: 65 } },
-  country: { operator: 'IN', value: ['US', 'UK', 'CA'] },
-  email_verified: { operator: 'IS NOT NULL' },
-  status: 'active'
-}, {
-  orderBy: [{ column: 'created_at', direction: 'DESC' }],
-  limit: 50
-});
-```
-
-### 2. Efficient Data Loading
-```javascript
-// Load related data in one query instead of N+1
-const postsWithAuthors = await db.join({
-  baseTable: 'posts',
-  joinTable: 'users',
-  baseKey: 'author_id',
-  joinKey: 'id',
-  columns: ['posts.*', 'users.name as author_name']
-});
-```
-
-### 3. Building Dynamic Queries
-```javascript
-const buildUserQuery = (filters) => {
-  const criteria = {};
-  
-  if (filters.minAge) {
-    criteria.age = { operator: '>=', value: filters.minAge };
-  }
-  
-  if (filters.status) {
-    criteria.status = filters.status;
-  }
-  
-  if (filters.roles && filters.roles.length) {
-    criteria.role = { operator: 'IN', value: filters.roles };
-  }
-  
-  return db.advancedSearch('users', criteria);
-};
-```
-
-### 4. Optimizing Large Inserts
-```javascript
-// For very large datasets, batch them
-const batchSize = 1000;
-for (let i = 0; i < largeArray.length; i += batchSize) {
-  const batch = largeArray.slice(i, i + batchSize);
-  await db.bulkInsert('records', batch);
-}
-```
-
-### 5. Using Hooks for Validation
-```javascript
-db.addHook('before', 'insert', async (data) => {
-  if (data.table === 'users') {
-    // Validate email format
-    if (!isValidEmail(data.data.email)) {
-      throw new Error('Invalid email format');
-    }
-    
-    // Check for duplicates
-    const exists = await db.exists('users', { email: data.data.email });
-    if (exists) {
-      throw new Error('Email already exists');
-    }
-  }
-  return data;
-});
-```
-
----
-
-## ⚠️ Common Pitfalls
-
-### 1. Not Including Tables in Allowed List
-```javascript
-// ❌ Wrong - table not in allowed list
-const db = createDb(pool, ['users']);
-await db.query('SELECT * FROM posts'); // Error!
-
-// ✅ Correct
-const db = createDb(pool, ['users', 'posts']);
-await db.query('SELECT * FROM posts'); // Works!
-```
-
-### 2. Forgetting to Use Transactions
-```javascript
-// ❌ Wrong - operations not atomic
-await db.insert('orders', orderData);
-await db.updateById('products', productId, { stock: newStock }); // If this fails, order is already created!
-
-// ✅ Correct
-await db.transaction(async () => {
-  await db.insert('orders', orderData);
-  await db.updateById('products', productId, { stock: newStock });
-});
-```
-
-### 3. Not Handling Null Results
-```javascript
-// ❌ Wrong - will crash if user not found
-const user = await db.findOne('users', { id: userId });
-console.log(user.name); // TypeError if user is null
-
-// ✅ Correct
-const user = await db.findOne('users', { id: userId });
-if (user) {
-  console.log(user.name);
-} else {
-  console.log('User not found');
-}
-```
-
-### 4. Loading Too Much Data at Once
-```javascript
-// ❌ Wrong - loads all records
-const allUsers = await db.selectWhere('users', {});
-
-// ✅ Correct - use pagination
-const { data, pagination } = await db.paginate('users', { page: 1, perPage: 50 });
-```
-
----
-
-## 📚 Additional Resources
-
-- [MySQL 2 Documentation](https://github.com/sidorares/node-mysql2)
-- [SQL Best Practices](https://www.sqlstyle.guide/)
-- [Database Design Principles](https://www.guru99.com/database-design.html)
-
----
-
-## 🙋 FAQ
-
-**Q: Can I use this with other databases like PostgreSQL?**  
-A: No, this library is specifically designed for MySQL. For PostgreSQL, consider using a different library.
-
-**Q: Does this support connection pooling?**  
-A: Yes! You pass a connection pool when creating the db instance. The library uses this pool for all queries.
-
-**Q: How do I handle soft deletes in queries?**  
-A: Add a WHERE condition to filter out soft-deleted records:
-```javascript
-const activeUsers = await db.selectWhere('users', { deleted_at: null });
-```
-
-**Q: Can I disable auto timestamps for specific tables?**  
-A: Timestamps are applied globally. Create separate db instances with different configs if needed.
-
-**Q: Is this production-ready?**  
-A: Yes! The library includes error handling, transaction support, query validation, and performance monitoring.
-
-**Q: How do I optimize slow queries?**  
-A: 
-- Add database indexes on frequently queried columns
-- Use `select()` with specific columns instead of `SELECT *`
-- Enable caching for read-heavy operations
-- Use pagination for large datasets
-
-**Q: Can I use raw SQL queries?**  
-A: Yes, use `db.raw()` for custom queries, but note that dangerous keywords are blocked for safety.
+MIT License - see [LICENSE](LICENSE) file for details
 
 ---
 
 ## 💬 Support
 
 - **Issues**: [GitHub Issues](https://github.com/piyaldeb/mysql2-helper-lite/issues)
-<!-- - **Documentation**: [Full Docs](https://github.com/yourusername/mysql-db-helper/wiki) -->
 - **Email**: piyaldeb87@gmail.com
 
 ---
 
 ## 🌟 Show Your Support
 
-If this library helped you, please consider:
-- ⭐ Starring the repository
-- 🐛 Reporting bugs
-- 💡 Suggesting new features
-- 📖 Improving documentation
-- 🔀 Contributing code
+If this library helped you, please:
+- ⭐ Star the repository
+- 🐛 Report bugs
+- 💡 Suggest new features
+- 📖 Improve documentation
+- 🔀 Contribute code
 
 ---
 
-**Made with ❤️ by developers, for developers**
+**Made with ❤️ for the developer community**

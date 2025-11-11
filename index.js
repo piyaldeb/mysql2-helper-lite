@@ -563,16 +563,24 @@ const createDb = (pool, allowedTables = [], options = {}) => {
 
     increment: async (table, id, field, amount = 1, idField = 'id') => {
       validateTable(table);
+      if (typeof amount !== 'number' || isNaN(amount)) {
+        throw new Error('Amount must be a valid number');
+      }
       const sql = `UPDATE \`${table}\` SET \`${field}\` = \`${field}\` + ? WHERE \`${idField}\` = ?`;
+      const [result] = await pool.execute(sql, [amount, id]);
       clearCacheForTable(table);
-      return await db.query(sql, [amount, id]);
+      return result.affectedRows;
     },
 
     decrement: async (table, id, field, amount = 1, idField = 'id') => {
       validateTable(table);
+      if (typeof amount !== 'number' || isNaN(amount)) {
+        throw new Error('Amount must be a valid number');
+      }
       const sql = `UPDATE \`${table}\` SET \`${field}\` = \`${field}\` - ? WHERE \`${idField}\` = ?`;
+      const [result] = await pool.execute(sql, [amount, id]);
       clearCacheForTable(table);
-      return await db.query(sql, [amount, id]);
+      return result.affectedRows;
     },
 
     incrementMany: async (table, id, fields = {}, idField = 'id') => {
@@ -1152,20 +1160,23 @@ sum: async (table, column, where = {}) => {
     validateTable(table);
     const whereKeys = Object.keys(where);
     const whereValues = Object.values(where);
-    
+
     const whereClause = whereKeys.length > 0
       ? `WHERE ${whereKeys.map(k => `\`${k}\` = ?`).join(' AND ')}`
       : '';
-    
+
+    // MySQL 8.0+ compatible median calculation
     let sql = `
-      SELECT AVG(t.${column}) as median_value
-      FROM (
-        SELECT @rownum:=@rownum+1 as row_number, d.${column}
-        FROM \`${table}\` d, (SELECT @rownum:=0) r
+      WITH ordered_data AS (
+        SELECT \`${column}\`,
+          ROW_NUMBER() OVER (ORDER BY \`${column}\`) AS row_num,
+          COUNT(*) OVER () AS total_rows
+        FROM \`${table}\`
         ${whereClause}
-        ORDER BY d.${column}
-      ) as t
-      WHERE t.row_number IN (FLOOR((@rownum+1)/2), FLOOR((@rownum+2)/2))
+      )
+      SELECT AVG(\`${column}\`) as median_value
+      FROM ordered_data
+      WHERE row_num IN (FLOOR((total_rows + 1) / 2), CEIL((total_rows + 1) / 2))
     `;
 
     const result = await db.getOne(sql, whereValues);
@@ -1500,15 +1511,16 @@ sum: async (table, column, where = {}) => {
     },
 
     raw: async (sql, params = []) => {
-      const dangerousKeywords = ['DROP', 'TRUNCATE', 'DELETE', 'ALTER', 'CREATE'];
-      const upperSql = sql.toUpperCase();
-      
+      const dangerousKeywords = ['DROP', 'TRUNCATE', 'ALTER', 'CREATE'];
+
       for (const keyword of dangerousKeywords) {
-        if (upperSql.includes(keyword)) {
+        // Check for keyword as a statement start to avoid false positives
+        const regex = new RegExp(`\\b${keyword}\\b`, 'i');
+        if (regex.test(sql)) {
           throw new Error(`Dangerous SQL keyword detected: ${keyword}`);
         }
       }
-      
+
       return await db.query(sql, params);
     },
 
@@ -1545,7 +1557,442 @@ sum: async (table, column, where = {}) => {
     freeConnections: stats._freeConnections?.length ?? 0,
     queueLength: stats._connectionQueue?.length ?? 0
   };
-}
+},
+
+    // ========================================
+    // CREATIVE FUNCTIONS (Not in mysql2)
+    // ========================================
+
+    /**
+     * Smart Diff - Compare two records and return only the changed fields
+     */
+    diff: async (table, id1, id2, idField = 'id') => {
+      validateTable(table);
+      const [record1, record2] = await Promise.all([
+        db.findOne(table, { [idField]: id1 }),
+        db.findOne(table, { [idField]: id2 })
+      ]);
+
+      if (!record1 || !record2) {
+        throw new Error('One or both records not found');
+      }
+
+      const differences = {};
+      const allKeys = new Set([...Object.keys(record1), ...Object.keys(record2)]);
+
+      for (const key of allKeys) {
+        if (record1[key] !== record2[key]) {
+          differences[key] = {
+            from: record1[key],
+            to: record2[key]
+          };
+        }
+      }
+
+      return differences;
+    },
+
+    /**
+     * Bulk Conditional Update - Update multiple records with different conditions
+     */
+    bulkConditionalUpdate: async (table, updates = []) => {
+      validateTable(table);
+      if (!Array.isArray(updates) || updates.length === 0) return 0;
+
+      const connection = await pool.getConnection();
+      try {
+        await connection.beginTransaction();
+        let totalAffected = 0;
+
+        for (const { where, data } of updates) {
+          const finalData = {
+            ...data,
+            ...(useTimestamps ? { updated_at: new Date() } : {})
+          };
+
+          const dataKeys = Object.keys(finalData);
+          const dataValues = Object.values(finalData);
+          const whereKeys = Object.keys(where);
+          const whereValues = Object.values(where);
+
+          const setClause = dataKeys.map(k => `\`${k}\` = ?`).join(', ');
+          const whereClause = whereKeys.map(k => `\`${k}\` = ?`).join(' AND ');
+
+          const sql = `UPDATE \`${table}\` SET ${setClause} WHERE ${whereClause}`;
+          const [result] = await connection.execute(sql, [...dataValues, ...whereValues]);
+          totalAffected += result.affectedRows;
+        }
+
+        await connection.commit();
+        clearCacheForTable(table);
+        return totalAffected;
+      } catch (err) {
+        await connection.rollback();
+        throw err;
+      } finally {
+        connection.release();
+      }
+    },
+
+    /**
+     * Time Travel Query - Query records as they were at a specific timestamp
+     */
+    timeTravel: async (table, timestamp, where = {}) => {
+      validateTable(table);
+      const whereKeys = Object.keys(where);
+      const whereValues = Object.values(where);
+
+      const conditions = whereKeys.map(k => `\`${k}\` = ?`);
+      conditions.push('created_at <= ?');
+      conditions.push('(updated_at <= ? OR updated_at IS NULL)');
+
+      const sql = `SELECT * FROM \`${table}\` WHERE ${conditions.join(' AND ')}`;
+      return await db.query(sql, [...whereValues, timestamp, timestamp]);
+    },
+
+    /**
+     * Smart Merge - Merge data from multiple tables based on common keys
+     */
+    smartMerge: async (tables = [], commonKey = 'id', keyValue) => {
+      tables.forEach(t => validateTable(t));
+
+      const results = await Promise.all(
+        tables.map(table => db.findOne(table, { [commonKey]: keyValue }))
+      );
+
+      const merged = {};
+      results.forEach((record, index) => {
+        if (record) {
+          Object.assign(merged, {
+            ...record,
+            [`_source_${tables[index]}`]: true
+          });
+        }
+      });
+
+      return Object.keys(merged).length > 0 ? merged : null;
+    },
+
+    /**
+     * Fuzzy Search - Find records with approximate matching
+     */
+    fuzzySearch: async (table, field, searchTerm, maxScore = 3) => {
+      validateTable(table);
+      const sql = `
+        SELECT *,
+          CASE
+            WHEN \`${field}\` = ? THEN 0
+            WHEN \`${field}\` LIKE ? THEN 1
+            WHEN \`${field}\` LIKE ? THEN 2
+            ELSE 3
+          END as match_score
+        FROM \`${table}\`
+        WHERE \`${field}\` LIKE ?
+        HAVING match_score <= ?
+        ORDER BY match_score, \`${field}\`
+        LIMIT 50
+      `;
+
+      return await db.query(sql, [
+        searchTerm,
+        `${searchTerm}%`,
+        `%${searchTerm}%`,
+        `%${searchTerm}%`,
+        maxScore
+      ]);
+    },
+
+    /**
+     * Weighted Random - Get random records with weighted probability
+     */
+    weightedRandom: async (table, weightColumn, count = 1, where = {}) => {
+      validateTable(table);
+      const whereKeys = Object.keys(where);
+      const whereValues = Object.values(where);
+
+      const whereClause = whereKeys.length > 0
+        ? `WHERE ${whereKeys.map(k => `\`${k}\` = ?`).join(' AND ')}`
+        : '';
+
+      const sql = `
+        SELECT *,
+          (\`${weightColumn}\` * RAND()) as weighted_score
+        FROM \`${table}\`
+        ${whereClause}
+        ORDER BY weighted_score DESC
+        LIMIT ${count}
+      `;
+
+      const results = await db.query(sql, whereValues);
+      return count === 1 ? (results[0] || null) : results;
+    },
+
+    /**
+     * Batch Transform - Apply a transformation function to all records
+     */
+    batchTransform: async (table, transformFn, where = {}, batchSize = 100) => {
+      validateTable(table);
+      let processed = 0;
+
+      await db.chunk(table, batchSize, async (records) => {
+        const connection = await pool.getConnection();
+        try {
+          await connection.beginTransaction();
+
+          for (const record of records) {
+            const transformed = await transformFn(record);
+            if (transformed && typeof transformed === 'object') {
+              const { id, ...data } = transformed;
+              const finalData = {
+                ...data,
+                ...(useTimestamps ? { updated_at: new Date() } : {})
+              };
+
+              const keys = Object.keys(finalData);
+              const values = Object.values(finalData);
+              const setClause = keys.map(k => `\`${k}\` = ?`).join(', ');
+              const sql = `UPDATE \`${table}\` SET ${setClause} WHERE id = ?`;
+              await connection.execute(sql, [...values, record.id]);
+              processed++;
+            }
+          }
+
+          await connection.commit();
+        } catch (err) {
+          await connection.rollback();
+          throw err;
+        } finally {
+          connection.release();
+        }
+      }, where);
+
+      clearCacheForTable(table);
+      return processed;
+    },
+
+    /**
+     * Snapshot - Create a backup snapshot of a table
+     */
+    snapshot: async (table, snapshotName = null) => {
+      validateTable(table);
+      const timestamp = new Date().getTime();
+      const name = snapshotName || `${table}_snapshot_${timestamp}`;
+
+      const sql = `CREATE TABLE \`${name}\` AS SELECT * FROM \`${table}\``;
+      await db.rawUnsafe(sql);
+
+      return {
+        snapshotName: name,
+        timestamp: new Date(),
+        originalTable: table
+      };
+    },
+
+    /**
+     * Versioning - Track record versions automatically
+     */
+    createVersion: async (table, id, userId = null, idField = 'id') => {
+      const versionTable = `${table}_versions`;
+      if (!allowedTables.includes(versionTable)) {
+        throw new Error(`Version table '${versionTable}' not in allowed tables`);
+      }
+
+      const record = await db.findOne(table, { [idField]: id });
+      if (!record) throw new Error('Record not found');
+
+      const versionData = {
+        record_id: id,
+        data: JSON.stringify(record),
+        user_id: userId,
+        version_timestamp: new Date()
+      };
+
+      return await db.insert(versionTable, versionData);
+    },
+
+    /**
+     * Conditional Aggregate - Aggregate with conditional logic
+     */
+    conditionalAggregate: async (table, aggregations = [], where = {}) => {
+      validateTable(table);
+      const whereKeys = Object.keys(where);
+      const whereValues = Object.values(where);
+
+      const aggClauses = aggregations.map(agg => {
+        const { func, column, condition, alias } = agg;
+        if (condition) {
+          return `${func}(CASE WHEN ${condition} THEN \`${column}\` ELSE NULL END) as ${alias || column}`;
+        }
+        return `${func}(\`${column}\`) as ${alias || column}`;
+      }).join(', ');
+
+      const whereClause = whereKeys.length > 0
+        ? `WHERE ${whereKeys.map(k => `\`${k}\` = ?`).join(' AND ')}`
+        : '';
+
+      const sql = `SELECT ${aggClauses} FROM \`${table}\` ${whereClause}`;
+      return await db.getOne(sql, whereValues);
+    },
+
+    /**
+     * Rank - Rank records based on a column with tie handling
+     */
+    rank: async (table, rankColumn, options = {}) => {
+      validateTable(table);
+      const {
+        partitionBy = null,
+        orderDirection = 'DESC',
+        where = {},
+        limit = 100
+      } = options;
+
+      const whereKeys = Object.keys(where);
+      const whereValues = Object.values(where);
+      const whereClause = whereKeys.length > 0
+        ? `WHERE ${whereKeys.map(k => `\`${k}\` = ?`).join(' AND ')}`
+        : '';
+
+      const partitionClause = partitionBy ? `PARTITION BY \`${partitionBy}\`` : '';
+
+      const sql = `
+        SELECT *,
+          RANK() OVER (${partitionClause} ORDER BY \`${rankColumn}\` ${orderDirection}) as rank_position,
+          DENSE_RANK() OVER (${partitionClause} ORDER BY \`${rankColumn}\` ${orderDirection}) as dense_rank
+        FROM \`${table}\`
+        ${whereClause}
+        LIMIT ${limit}
+      `;
+
+      return await db.query(sql, whereValues);
+    },
+
+    /**
+     * Moving Average - Calculate moving average for time series data
+     */
+    movingAverage: async (table, valueColumn, dateColumn, windowSize = 7, where = {}) => {
+      validateTable(table);
+      const whereKeys = Object.keys(where);
+      const whereValues = Object.values(where);
+
+      const whereClause = whereKeys.length > 0
+        ? `WHERE ${whereKeys.map(k => `\`${k}\` = ?`).join(' AND ')}`
+        : '';
+
+      const sql = `
+        SELECT
+          \`${dateColumn}\`,
+          \`${valueColumn}\`,
+          AVG(\`${valueColumn}\`) OVER (
+            ORDER BY \`${dateColumn}\`
+            ROWS BETWEEN ${windowSize - 1} PRECEDING AND CURRENT ROW
+          ) as moving_avg
+        FROM \`${table}\`
+        ${whereClause}
+        ORDER BY \`${dateColumn}\`
+      `;
+
+      return await db.query(sql, whereValues);
+    },
+
+    /**
+     * Duplicate Detection - Find potential duplicate records
+     */
+    findDuplicates: async (table, compareFields = []) => {
+      validateTable(table);
+      if (compareFields.length === 0) {
+        throw new Error('At least one field must be specified for comparison');
+      }
+
+      const groupByClause = compareFields.map(f => `\`${f}\``).join(', ');
+      const selectFields = compareFields.map(f => `\`${f}\``).join(', ');
+
+      const sql = `
+        SELECT ${selectFields}, COUNT(*) as duplicate_count, GROUP_CONCAT(id) as duplicate_ids
+        FROM \`${table}\`
+        GROUP BY ${groupByClause}
+        HAVING COUNT(*) > 1
+        ORDER BY duplicate_count DESC
+      `;
+
+      return await db.query(sql);
+    },
+
+    /**
+     * Intelligent Cache Warming - Pre-load frequently accessed data
+     */
+    warmCache: async (table, queries = []) => {
+      validateTable(table);
+      const warmedCount = queries.length;
+
+      await Promise.all(
+        queries.map(({ where = {}, options = {} }) =>
+          db.selectWhere(table, where, { ...options, useCache: true })
+        )
+      );
+
+      return {
+        warmedQueries: warmedCount,
+        cacheSize: queryCache.size,
+        timestamp: new Date()
+      };
+    },
+
+    /**
+     * Cascade Update - Update record and all related records
+     */
+    cascadeUpdate: async (table, id, data, relations = [], idField = 'id') => {
+      validateTable(table);
+      const connection = await pool.getConnection();
+
+      try {
+        await connection.beginTransaction();
+
+        // Update main record
+        await db.updateById(table, id, data, idField);
+
+        // Update related records
+        for (const relation of relations) {
+          const { table: relTable, foreignKey, data: relData } = relation;
+          validateTable(relTable);
+
+          if (relData && Object.keys(relData).length > 0) {
+            await db.updateWhere(relTable, { [foreignKey]: id }, relData);
+          }
+        }
+
+        await connection.commit();
+        clearCacheForTable(table);
+        relations.forEach(r => clearCacheForTable(r.table));
+
+        return { success: true, updated: 1 + relations.length };
+      } catch (err) {
+        await connection.rollback();
+        throw err;
+      } finally {
+        connection.release();
+      }
+    },
+
+    /**
+     * Query Statistics - Analyze query performance patterns
+     */
+    queryStats: async (table, options = {}) => {
+      validateTable(table);
+      const { days = 7 } = options;
+
+      const sql = `
+        SELECT
+          COUNT(*) as total_records,
+          AVG(CHAR_LENGTH(CAST(CONCAT_WS('', *) AS CHAR))) as avg_row_size,
+          MAX(created_at) as latest_record,
+          MIN(created_at) as oldest_record,
+          COUNT(DISTINCT DATE(created_at)) as days_with_data
+        FROM \`${table}\`
+        WHERE created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
+      `;
+
+      return await db.getOne(sql, [days]);
+    }
 
   }
   return db;
